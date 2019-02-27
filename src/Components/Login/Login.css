@@ -1,0 +1,20 @@
+#loginContainer {
+    margin-top: 100px;
+    margin-bottom: 50px;
+    width: 40%;
+    background-color: #ffffff;
+    padding: 20px;
+    text-align: left;
+    font-family: Futura;
+    border-radius: 20px;
+}
+
+#loginHeader {
+    text-align: center;
+}
+
+@media only screen and (max-width: 700px) {
+    #loginContainer {
+        width: 90%;
+    }
+}
