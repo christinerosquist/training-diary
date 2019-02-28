@@ -1,0 +1,22 @@
+#feedImg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+#feedDesc {
+    margin-top: 20px;
+}
+
+#feedRow {
+    width: 50%;
+    margin: 10px auto 0;
+    text-align: center;
+}
+
+@media only screen and (max-width: 800px) {
+    #feedRow {
+        width: 70%;
+    }
+}

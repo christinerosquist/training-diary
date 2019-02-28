@@ -16,12 +16,35 @@ code {
 
 .appContainer {
     background-color: #ffffff;
-    padding: 20px;
     width: 60%;
+    padding: 0;
+}
+
+#navbarDiv {
+    width: 60%;
+    margin: 0px auto 0;
+}
+
+@media only screen and (min-width: 701px) and (max-width: 1200px) {
+    .appContainer {
+        width: 75%;
+    }
+
+    #navbarDiv {
+        width: 75%;
+    }
 }
 
 @media only screen and (max-width: 700px) {
     .appContainer {
         width: 90%;
     }
+
+    #navbarDiv {
+        width: 90%;
+    }
+}
+
+.container {
+    max-width: none;
 }
