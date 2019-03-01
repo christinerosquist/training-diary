@@ -3,10 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "better-logging": "^3.3.2",
+    "express-session": "^1.15.6",
+    "express-socket.io-session": "^1.3.5",
+    "mysql2": "^1.6.5",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.5"
+    "react-scripts": "2.1.5",
+    "sequelize": "^4.42.1",
+    "socket.io": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -22,5 +28,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "proxy": "http://localhost:5000/"
 }

@@ -1,4 +1,4 @@
-import model from "./DinnerModel";
+import model from "./model";
 
 
 class ObservableModel {

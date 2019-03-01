@@ -3,6 +3,15 @@ import FeedItem from "./FeedItem";
 import './Feed.css'
 
 class Feed extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            search: ''
+        }
+
+    }
+
 
     render() {
         return (
