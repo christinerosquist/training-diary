@@ -18,15 +18,16 @@ const sequelize = new Sequelize('rosquis', 'rosquisadmin', 'upa6fooBie', {
 });
 
 // Setting up connection between db and sequelize
-
+// man skulle kunna ta bort alla foreign keys och istället skapa dem via Sequelize
+// vi kan även ha UUID istället på alla ID
 const User = sequelize.define('user', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
     },
-    user_info_id: {
-        type: Sequelize.INTEGER
-    },
+    // user_info_id: {
+    //     type: Sequelize.INTEGER
+    // },
     password: {
         type: Sequelize.STRING
     }
@@ -34,6 +35,7 @@ const User = sequelize.define('user', {
     timestamps: false
 });
 
+// borde kanske ha user_id i UserInfo istället?
 const UserInfo = sequelize.define('user_info', {
     id: {
         type: Sequelize.INTEGER,
@@ -55,7 +57,13 @@ const UserInfo = sequelize.define('user_info', {
     timestamps: false
 });
 
-UserInfo.hasOne(User, {foreignKey: 'user_info_id'});
+/**
+    User.hasOne(UserInfo) or User.belongsTo(UserInfo) --> User = source, userInfo = target
+    BelongsTo will add the foreignKey on the source where hasOne will add on the target
+**/
+User.hasOne(UserInfo, {foreignKey: 'user_id'}, {as: 'Info'}) // should be able to use user.getInfo()
+User.hasOne(MuscleMassProgress, {foreignKey: 'user_id'}, {as: 'MMP'})
+User.hasOne(WeightProgress, {foreignKey: 'user_id'}, {as: 'WP'})
 
 const Session = sequelize.define('session', {
     id: {
@@ -81,16 +89,115 @@ const Session = sequelize.define('session', {
     timestamps: false
 });
 
-// NOT DONE
 const Workout = sequelize.define('workout', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
     },
+    user_id: {
+        type: Sequelize.INTEGER
+    },
+    type: {
+        type: Sequelize.STRING
+    },
+    date: {
+        type: Sequelize.DATE
+    },
+    likes: {
+        type: Sequelize.INTEGER
+    }
 }, {
     timestamps: false
 });
 
+/** belongsToMany: http://docs.sequelizejs.com/manual/tutorial/associations.html#belongs-to-many-associations
+    Creates model SessionWorkout with foreign keys sessionId and workoutId
+    Adds methods getSessions, setSessions, addSession, addSessions to Workout,
+    and getWorkouts, setWorkouts, addWorkout, and addWorkouts to Session.
+**/
+Session.belongsToMany(Workout, {through: 'SessionWorkout'})
+Workout.belongsToMany(Session, {through: 'SessionWorkout'})
+
+const Exercise = sequelize.define('exercise', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+    },
+    name: {
+        type: Sequelize.STRING
+    },
+    define_calories_upon: {
+        type: Sequelize.STRING
+    },
+    calories: {
+        type: Sequelize.INTEGER
+    }
+}, {
+    timestamps: false
+});
+
+Exercise.hasMany(Session, {foreignKey: 'exercise_id'}) // enables exercise.getSessions()
+Session.belongsTo(Exercise, {foreignKey: 'exercise_id'}) // enables session.getExercise()
+
+const GroupTraining = sequelize.define('exercise', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+    },
+    name: {
+        type: Sequelize.STRING
+    },
+    duration: {
+        type: Sequelize.INTEGER
+    },
+    calories_per_minute: {
+        type: Sequelize.INTEGER
+    }
+}, {
+    timestamps: false
+});
+
+
+GroupTraining.hasMany(Workout)
+Workout.belongsTo(GroupTraining)
+
+const MuscleMassProgress = sequelize.define('muscle_mass_progress', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+    },
+    date: {
+        type: Sequelize.DATE
+    },
+    percentage: {
+        type: Sequelize.INTEGER
+        validate: {
+            max: 100, // kanske vill ändra till rimliga max och min
+            min: 0
+        }
+    },
+
+});
+
+const WeightProgress = sequelize.define('weight_progress', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+    },
+    date: {
+        type: Sequelize.DATE
+    },
+    percentage: {
+        type: Sequelize.INTEGER
+        validate: {
+            max: 100, // kanske vill ändra till rimliga max och min
+            min: 0
+        }
+    },
+
+});
+
+MuscleMassProgress.belongsTo(User)
 
 exports.getLatestActivities = () => {
 
