@@ -13,8 +13,8 @@ io.on('connection', socket => {
     socketController(socket, io);
 });
 
-// Demo calls to model
-//const model = require('./model.js');
+const model = require('./model.js');
+model.getLatestActivities()
 
 
 listen(port, () => {

@@ -13,13 +13,13 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.callBackendAPI()
-            .then(res => console.log(res.express))
-            .catch(err => console.log(err))
+        // this.callBackendAPI()
+        //     .then(res => console.log(res))
+        //     .catch(err => console.log(err))
     }
 
     callBackendAPI = async () => {
-        const response = await fetch('/api/testconnection')
+        const response = await fetch('/api/getworkouts')
         const body = await response.json()
 
         if(response.status !== 200){

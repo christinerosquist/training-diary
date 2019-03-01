@@ -2,8 +2,11 @@ const model = require("../model.js");
 const express = require('express');
 const router = express.Router();
 
-router.get('/feed', async function (req, res) {
+router.get('/getworkouts', async function (req, res) {
+    const workouts = await model.getLatestActivities()
+
     res.json({
+        workouts: workouts
     });
 });
 
