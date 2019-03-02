@@ -1,7 +1,3 @@
-
-
-module.exports = () => {
-
     const Sequelize = require('sequelize');
     const sequelize = new Sequelize('rosquis', 'rosquisadmin', 'upa6fooBie', {
         host: 'mysql-vt2019.csc.kth.se',
@@ -18,22 +14,25 @@ module.exports = () => {
         },
     });
 
-// Setting up connection between db and sequelize
-// man skulle kunna ta bort alla foreign keys och istället skapa dem via Sequelize
-// vi kan även ha UUID istället på alla ID
+    module.exports = () => {
+
+    // Setting up connection between db and sequelize
+    // man skulle kunna ta bort alla foreign keys och istället skapa dem via Sequelize
+    // vi kan även ha UUID istället på alla ID
     const User = sequelize.define('user', {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
         },
-        // user_info_id: {
-        //     type: Sequelize.INTEGER
-        // },
+        user_info_id: {
+            type: Sequelize.INTEGER
+        },
         password: {
             type: Sequelize.STRING
         }
     }, {
         timestamps: false,
+        underscored: true,
         freezeTableName: true,
     });
 
@@ -57,6 +56,7 @@ module.exports = () => {
         }
     }, {
         timestamps: false,
+        underscored: true,
         freezeTableName: true
     });
 
@@ -79,6 +79,7 @@ module.exports = () => {
         }
     }, {
         timestamps: false,
+        underscored: true,
         freezeTableName: true
     });
 
@@ -104,6 +105,7 @@ module.exports = () => {
         }
     }, {
         timestamps: false,
+        underscored: true,
         freezeTableName: true
     });
 
@@ -123,6 +125,7 @@ module.exports = () => {
         }
     }, {
         timestamps: false,
+        underscored: true,
         freezeTableName: true
     });
 
@@ -142,7 +145,8 @@ module.exports = () => {
         }
     }, {
         timestamps: false,
-        freezeTableName: true
+        freezeTableName: true,
+        underscored: true
     });
 
     const MuscleMassProgress = sequelize.define('muscle_mass_progress', {
@@ -188,8 +192,8 @@ module.exports = () => {
     User.hasOne(MuscleMassProgress, {foreignKey: 'user_id'}, {as: 'MMP'}) // user.getMMP()
     User.hasOne(WeightProgress, {foreignKey: 'user_id'}, {as: 'WP'}) // user.getWP()
 
-    Exercise.hasMany(Session, {foreignKey: 'exercise_id'}) // enables exercise.getSessions()
-    Session.belongsTo(Exercise, {foreignKey: 'exercise_id'}) // enables session.getExercise()
+    Exercise.hasMany(Session, {foreignKey: 'exercise_id', sourceKey: 'id'}) // enables exercise.getSessions()
+    Session.belongsTo(Exercise, {foreignKey: 'exercise_id', targetKey: 'id'}) // enables session.getExercise()
 
     /** belongsToMany: http://docs.sequelizejs.com/manual/tutorial/associations.html#belongs-to-many-associations
      Creates model SessionWorkout with foreign keys sessionId and workoutId

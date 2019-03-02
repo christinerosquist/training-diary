@@ -12,21 +12,21 @@ drop table group_training;
 
 create table user (
 id int,
-user_info_id int,
 password varchar(64)
 );
 
-insert into user values (1,1,'testPassword');
+insert into user values (1,'testPassword');
 
 create table user_info (
 id int,
+user_id int,
 name varchar(64),
 sex varchar(64),
 height int,
 current_weight int
 );
 
-insert into user_info values (1,'Christine','female',157, 52);
+insert into user_info values (1,1,'Christine','female',157, 52);
 
 create table weight_progress (
 id int,
