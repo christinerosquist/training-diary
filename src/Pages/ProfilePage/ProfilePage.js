@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import Header from "../../Components/Header/Header";
 import Navbar from "../../Components/Navbar/Navbar";
+import ProfileHeader from "../../Components/ProfileHeader/ProfileHeader";
+import Progress from "../../Components/Progress/Progress";
+import Diary from "../../Components/Diary/Diary";
 
 class ProfilePage extends Component {
     render() {
@@ -11,13 +14,14 @@ class ProfilePage extends Component {
                     <Navbar/>
                 </div>
                 <div className="container appContainer">
-                    hej
+                    <ProfileHeader/>
+                    <Progress/>
+                    <Diary/>
                 </div>
             </div>
         );
     }
 }
 
-ProfilePage.propTypes = {};
 
 export default ProfilePage;
