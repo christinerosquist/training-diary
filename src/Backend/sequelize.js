@@ -1,13 +1,13 @@
     const Sequelize = require('sequelize');
     const sequelize = new Sequelize('rosquis', 'rosquisadmin', 'upa6fooBie', {
-        host: 'mysql-vt2019.csc.kth.se',
-        //host: '2001:6b0:1:1300:250:56ff:fe01:25a',
+        //host: 'mysql-vt2019.csc.kth.se',
+        host: '2001:6b0:1:1300:250:56ff:fe01:25a',
         dialect: 'mysql',
         operatorsAliases: false,
         logging: false,
 
         pool: {
-            max: 5,
+            max: 100,
             min: 0,
             acquire: 30000,
             idle: 10000
@@ -19,22 +19,45 @@
     // Setting up connection between db and sequelize
     // man skulle kunna ta bort alla foreign keys och istället skapa dem via Sequelize
     // vi kan även ha UUID istället på alla ID
-    const User = sequelize.define('user', {
-        id: {
-            type: Sequelize.INTEGER,
-            primaryKey: true,
-        },
-        user_info_id: {
-            type: Sequelize.INTEGER
-        },
-        password: {
-            type: Sequelize.STRING
-        }
-    }, {
-        timestamps: false,
-        underscored: true,
-        freezeTableName: true,
-    });
+        const User = sequelize.define('user', {
+            id: {
+                type: Sequelize.INTEGER,
+                primaryKey: true,
+            },
+            user_info_id: {
+                type: Sequelize.INTEGER
+            },
+            password: {
+                type: Sequelize.STRING
+            },
+            email: {
+                type: Sequelize.STRING
+            },
+            // hash: Sequelize.STRING,
+            // salt: Sequelize.STRING,
+        }, {
+            timestamps: false,
+            underscored: true,
+            freezeTableName: true,
+            instanceMethods: {
+                generateHash(password) {
+                    // creating a unique salt for the particular user
+                    this.salt = crypto.randomBytes(16).toString('hex');
+
+                    // hashing user's salt and password with 1000 iterations, 64 length and sha512 digest
+                    this.hash = crypto.pbkdf2Sync(password, this.salt,
+                        1000, 64, `sha512`).toString(`hex`);
+                },
+
+                // Method to check entered password is correct or not
+                // validPassword method checks whether the user
+                validPassword(password) {
+                    var hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, `sha512`).toString(`hex`);
+                    return this.hash === hash;
+                }
+            }
+        });
+
 
 // borde kanske ha user_id i UserInfo istället?
     const UserInfo = sequelize.define('user_info', {
@@ -213,5 +236,7 @@
     return {
         User, UserInfo, Session, Workout, Exercise, GroupTraining, MuscleMassProgress, WeightProgress
     }
+
+
 
 }
