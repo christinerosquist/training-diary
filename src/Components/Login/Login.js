@@ -1,22 +1,88 @@
 import React, {Component} from 'react';
 import './Login.css'
+import Redirect from "react-router-dom/es/Redirect";
+
 
 class Login extends Component {
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            email: '',
+            password: '',
+            redirect: false,
+        }
+
+        this.handleEmail = this.handleEmail.bind(this);
+        this.handlePassword = this.handlePassword.bind(this);
+        this.handleSubmitBtn = this.handleSubmitBtn.bind(this);
+        this.handleForm = this.handleForm.bind(this);
+
+    }
+
+    callBackendAPI = async (email, password) => {
+        const response = await fetch('/api/validateuser/' + email + "/" + password);
+        const body = await response.json()
+
+        if(response.status !== 200){
+            throw Error(body.message)
+        }
+        return body
+    }
+
+    validateUser(email, password){
+        console.log(email + password)
+        this.callBackendAPI(email, password)
+            .then(async res => {
+                if (res.user != "Invalid") {
+                    this.setState({ redirect: true });
+                } else alert("Could not log in. Please check that your email and password are correct.")
+            })
+            .catch(err => console.log(err))
+
+    }
+
+    handleEmail(event) {
+        this.setState({
+            email: event.target.value,
+        })
+        console.log("email updated")
+    }
+
+    handlePassword(event) {
+        this.setState({
+            password: event.target.value,
+        })
+        console.log("password updated")
+    }
+
+    handleSubmitBtn() {
+        this.validateUser(this.state.email, this.state.password)
+    }
+
+    handleForm(e){
+            e.preventDefault();
+    }
+
     render() {
+        if (this.state.redirect) {
+            return <Redirect to='/feed'/>;
+        }
         return (
             <div>
                 <div className="container" id="loginContainer">
                     <h3 id="loginHeader">LOGIN</h3>
-                    <form>
+                    <form onSubmit={this.handleForm}>
                         <div className="form-group">
                             <label >Email address</label>
-                            <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"/>
+                            <input type="email" className="form-control" value={this.state.email} onChange={this.handleEmail} id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"/>
                         </div>
                         <div className="form-group">
                             <label >Password</label>
-                            <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"/>
+                            <input type="password" className="form-control" value={this.state.password} onChange={this.handlePassword} id="exampleInputPassword1" placeholder="Password"/>
                         </div>
-                        <button type="submit" className="btn btn-primary">Submit</button>
+                        <button type="submit" onClick={this.handleSubmitBtn } className="btn btn-primary">Submit</button>
                     </form>
                 </div>
             </div>

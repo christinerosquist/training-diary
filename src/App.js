@@ -6,6 +6,7 @@ import FeedPage from "./Pages/FeedPage/FeedPage"
 import ProfilePage from "./Pages/ProfilePage/ProfilePage"
 import AddWorkoutPage from "./Pages/AddWorkoutPage/AddWorkoutPage"
 import AddProgressPage from "./Pages/AddProgressPage/AddProgressPage"
+import CreateUserPage from "./Pages/LoginPage/CreateUserPage";
 
 class App extends Component {
     state = {
@@ -34,8 +35,9 @@ class App extends Component {
                 <BrowserRouter>
                     <Switch>
                         <Route exact path='/' render={(props) => <LoginPage/>}/>
+                        <Route path='/createuser' render={() => <CreateUserPage />}/>
                         <Route path='/feed' render={() => <FeedPage />}/>
-                        <Route path='/profile' render={({props}) => <ProfilePage/>}/>
+                        <Route path='/profile:id' render={({props}) => <ProfilePage/>}/>
                         <Route path='/addworkout' render={(props) => <AddWorkoutPage/>}/>
                         <Route path='/addprogress' render={(props) => <AddProgressPage/>}/>
                     </Switch>
