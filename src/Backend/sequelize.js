@@ -24,17 +24,11 @@
                 type: Sequelize.INTEGER,
                 primaryKey: true,
             },
-            user_info_id: {
-                type: Sequelize.INTEGER
-            },
-            password: {
-                type: Sequelize.STRING
-            },
             email: {
                 type: Sequelize.STRING
             },
-            // hash: Sequelize.STRING,
-            // salt: Sequelize.STRING,
+            hash: Sequelize.TEXT('long'),
+            salt: Sequelize.STRING,
         }, {
             timestamps: false,
             underscored: true,
