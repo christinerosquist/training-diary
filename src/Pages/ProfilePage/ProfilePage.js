@@ -9,14 +9,6 @@ class ProfilePage extends Component {
     constructor() {
         super()
     }
-
-    componentDidMount() {
-        console.log(this.props.params.id)
-        fetch('/api/profile/' + this.props.params.id)
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(error => console.log(error))
-    }
     render() {
         return (
             <div>
@@ -27,7 +19,7 @@ class ProfilePage extends Component {
                 <div className="container appContainer">
                     <ProfileHeader/>
                     <Progress/>
-                    <Diary/>
+                    <Diary user_id={this.props.params.id}/>
                 </div>
             </div>
         );

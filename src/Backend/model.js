@@ -15,17 +15,6 @@ exports.createUser = (email, password, name, sex, height, weight) => {
     }).then(data => {return data})
 }
 
-exports.getLatestActivities = () => {
-    return User.findByPk(1) // HÄR KAN MAN ÄNDRA FÖR ATT TESTA OLIKA TABELLER
-        .then(user => {
-            user.getWorkouts()
-            .then(works => {
-                console.log(works)
-            })
-        })
-        .catch(error => {console.log(error)})
-}
-
 // Get all workouts from user
 exports.getWorkouts = (userId) => {
     return User.findByPk(userId) // user1
@@ -38,10 +27,9 @@ exports.getWorkouts = (userId) => {
         .catch(error => {console.log(error)})
 }
 
-
 // Get all sessions that belongs to the workout with workoutId
-exports.getSessions = (workoutId) => {
-    return Workout.findByPk(workoutId)
+exports.getSessions = (workout_id) => {
+    return Workout.findByPk(workout_id)
         .then(workout => {
             return workout.getSessions()
                 .then(sessions => {
@@ -49,6 +37,20 @@ exports.getSessions = (workoutId) => {
                 })
         })
         .catch(error => {console.log(error)})
+}
+
+exports.getAllWorkouts = () => {
+    return Workout.findAll({limit: 1, reverse: true})
+        .then(workouts => {return workouts})
+        .catch(error => console.log(error))
+}
+
+exports.getGroupTraining = (id) => {
+    return GroupTraining.findByPk(id)
+        .then(group_training => {
+            return group_training
+        })
+        .catch(error => console.log(error))
 }
 
 exports.createSession = (eid, wei, set, rep) => {

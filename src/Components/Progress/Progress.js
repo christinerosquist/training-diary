@@ -2,7 +2,12 @@ import React, {Component} from 'react';
 import {Line} from "react-chartjs-2";
 
 class Progress extends Component {
-    render() {
+
+    componentDidMount() {
+        wlabels = []
+        mlabels = []
+        wdatasets[0].data = []
+        mdatasets[0].data = []
 
         mockWeightProgress.forEach((weight) => {
             wlabels.push(weight.date)
@@ -13,7 +18,9 @@ class Progress extends Component {
             mlabels.push(muscle.date)
             mdatasets[0].data.push(muscle.percent)
         })
+    }
 
+    render() {
         const muscleData = {
             labels: mlabels,
             datasets: mdatasets
@@ -37,16 +44,16 @@ class Progress extends Component {
     }
 }
 
-const wlabels = [];
-const wdatasets = [{
+var wlabels = [];
+var wdatasets = [{
     label: 'Weight',
     data: [],
     fill: false,
     borderColor: 'green'
 }];
 
-const mlabels = [];
-const mdatasets = [{
+var mlabels = [];
+var mdatasets = [{
     label: 'Muscle',
     data: [],
     fill: false,

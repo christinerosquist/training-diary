@@ -2,42 +2,38 @@ const model = require("../model.js");
 const express = require('express');
 const router = express.Router();
 
-router.get('/getworkouts', async function (req, res) {
-    const workouts = await model.getWorkouts(1)
-    const sessions = await model.getSessions(1)
-
-    res.json({
-        workouts: workouts,
-        sessions: sessions
-    });
-});
-
 router.get('/profile/:id', async function (req, res) {
-    const userId = req.params.id
-    const allWorkouts = await model.getWorkouts(userId)
-
-    const workouts = [];
-
-    allWorkouts.map(async (workout) => {
-        if(workout.type === 'Session'){
-            console.log("rest: I got a session workout!")
-
-            const sessions = await model.getSessions(workout.id)
-
-            console.log("rest: And the sessions for this workout is: ", sessions)
-            workouts.push({
-                workout: workout,
-                sessions: sessions
-            })
-        } else {
-            workouts.push(workout)
-        }
-    })
-
-    console.log("rest controller is sending this to frontend: ", workouts)
+    const user_id = req.params.id
+    const workouts = await model.getWorkouts(user_id)
 
     res.json({
         workouts: workouts
+    });
+});
+
+router.get('/getsessions/:id', async function (req, res) {
+    const workout_id = req.params.id
+    const sessions = await model.getSessions(workout_id)
+
+    res.json({
+        sessions: sessions
+    })
+});
+
+router.get('/getgrouptraining/:id', async function (req, res) {
+    const workout_id = req.params.id
+    const group_training = await model.getGroupTraining(workout_id)
+
+    res.json({
+        group_training: group_training
+    })
+});
+
+router.get('/feed', async function (req, res) {
+    const entries = await model.getAllWorkouts()
+
+    res.json({
+        entries: entries
     });
 });
 
