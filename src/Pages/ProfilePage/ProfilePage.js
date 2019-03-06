@@ -15,6 +15,7 @@ class ProfilePage extends Component {
         fetch('/api/profile/' + this.props.params.id)
             .then(res => res.json())
             .then(data => console.log(data))
+            .catch(error => console.log(error))
     }
     render() {
         return (
