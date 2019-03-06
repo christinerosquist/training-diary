@@ -17,26 +17,23 @@
     module.exports = () => {
 
     // Setting up connection between db and sequelize
-    // man skulle kunna ta bort alla foreign keys och istället skapa dem via Sequelize?
-    // vi kan även ha UUID istället på alla ID
+    // vi kan ha UUID istället på alla ID
         const User = sequelize.define('user', {
             id: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.UUID,
                 primaryKey: true,
-                autoIncrement: true
-            },
-            hash: {
-                type: Sequelize.STRING
-            },
-            salt: {
-                type: Sequelize.STRING
+                defaultValue: Sequelize.UUIDV1
             },
             email: {
                 type: Sequelize.STRING
             },
-            // hash: Sequelize.STRING,
-            // salt: Sequelize.STRING,
-        }, {
+            hash: {
+                type: Sequelize.TEXT('long'),
+            },
+            salt: {
+                type: Sequelize.STRING,
+            },
+        },{
             timestamps: false,
             underscored: true,
             freezeTableName: true,
@@ -60,12 +57,11 @@
         });
 
 
-// borde kanske ha user_id i UserInfo istället?
     const UserInfo = sequelize.define('user_info', {
         id: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.UUID,
             primaryKey: true,
-            autoIncrement: true
+            defaultValue: Sequelize.UUIDV1
         },
         user_id: {
             type: Sequelize.INTEGER
@@ -90,9 +86,9 @@
 
     const Workout = sequelize.define('workout', {
         id: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.UUID,
             primaryKey: true,
-            autoIncrement: true
+            defaultValue: Sequelize.UUIDV1
         },
         group_training_id: {
             type: Sequelize.INTEGER
@@ -114,9 +110,9 @@
 
     const Session = sequelize.define('session', {
         id: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.UUID,
             primaryKey: true,
-            autoIncrement: true
+            defaultValue: Sequelize.UUIDV1
         },
         exercise_id: {
             type: Sequelize.INTEGER
@@ -145,20 +141,11 @@
         freezeTableName: true
     });
 
-    const PersonalWorkout = sequelize.define('personal_workout', {
-        name: Sequelize.STRING
-    },
-    {
-        timestamps: false,
-        underscored: true,
-        freezeTableName: true
-    });
-
     const Exercise = sequelize.define('exercise', {
         id: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.UUID,
             primaryKey: true,
-            autoIncrement: true
+            defaultValue: Sequelize.UUIDV1
         },
         name: {
             type: Sequelize.STRING
@@ -177,9 +164,9 @@
 
     const GroupTraining = sequelize.define('group_training', {
         id: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.UUID,
             primaryKey: true,
-            autoIncrement: true
+            defaultValue: Sequelize.UUIDV1
         },
         name: {
             type: Sequelize.STRING
@@ -198,9 +185,9 @@
 
     const MuscleMassProgress = sequelize.define('muscle_mass_progress', {
         id: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.UUID,
             primaryKey: true,
-            autoIncrement: true
+            defaultValue: Sequelize.UUIDV1
         },
         date: {
             type: Sequelize.DATE
@@ -217,19 +204,15 @@
 
     const WeightProgress = sequelize.define('weight_progress', {
         id: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.UUID,
             primaryKey: true,
-            autoIncrement: true
+            defaultValue: Sequelize.UUIDV1
         },
         date: {
             type: Sequelize.DATE
         },
-        percentage: {
+        kg: {
             type: Sequelize.INTEGER,
-            validate: {
-                max: 100, // kanske vill ändra till rimliga max och min
-                min: 0
-            }
         },
     });
 
@@ -244,6 +227,12 @@
     Exercise.hasMany(Session, {foreignKey: 'exercise_id', sourceKey: 'id'}) // enables exercise.getSessions()
     Session.belongsTo(Exercise, {foreignKey: 'exercise_id', targetKey: 'id'}) // enables session.getExercise()
 
+    GroupTraining.hasMany(Workout, {foreignKey: 'group_training_id', sourceKey: 'id'}) // groupTraining.getWorkouts()
+    Workout.belongsTo(GroupTraining, {foreignKey: 'group_training_id', targetKey: 'id'}) // not sure if workout.getGroupTraining() works
+
+    User.hasMany(Workout, {foreignKey: 'user_id', sourceKey: 'id'}) // user.getWorkouts()
+    Workout.belongsTo(User, {foreignKey: 'user_id', targetKey: 'id'})
+
     /** belongsToMany: http://docs.sequelizejs.com/manual/tutorial/associations.html#belongs-to-many-associations
      Creates model SessionWorkout with foreign keys sessionId and workoutId
      Adds methods getSessions, setSessions, addSession, addSessions to Workout,
@@ -252,12 +241,9 @@
      **/
     Session.belongsToMany(Workout, {through: SessionWorkout})
     Workout.belongsToMany(Session, {through: SessionWorkout})
-    //
-    GroupTraining.hasMany(Workout, {foreignKey: 'group_training_id', sourceKey: 'id'}) // groupTraining.getWorkouts()
-    Workout.belongsTo(GroupTraining, {foreignKey: 'group_training_id', targetKey: 'id'})
-    //
-    User.belongsToMany(Workout, {through: PersonalWorkout})
-    Workout.belongsToMany(User, {through: PersonalWorkout})
+    // //
+    // User.belongsToMany(Workout, {through: PersonalWorkout})
+    // Workout.belongsToMany(User, {through: PersonalWorkout})
 
     return {
         User, UserInfo, Session, Workout, Exercise, GroupTraining, MuscleMassProgress, WeightProgress, sequelize
