@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Header from "../../Components/Header/Header";
 import Navbar from "../../Components/Navbar/Navbar";
+import AddWorkout from "../../Components/AddWorkout/AddWorkout";
 
 class AddWorkoutPage extends Component {
     render() {
@@ -11,7 +12,7 @@ class AddWorkoutPage extends Component {
                     <Navbar/>
                 </div>
                 <div className="container appContainer">
-                    hej
+                    <AddWorkout/>
                 </div>
             </div>
         );

@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/getworkouts', async function (req, res) {
-    const workouts = await model.getWorkouts()
-    const sessions = await model.getSessions()
+    const workouts = await model.getWorkouts(1)
+    const sessions = await model.getSessions(1)
 
     res.json({
         workouts: workouts,
@@ -13,11 +13,35 @@ router.get('/getworkouts', async function (req, res) {
 });
 
 router.get('/profile/:id', async function (req, res) {
+    const userId = req.params.id
+    const allWorkouts = await model.getWorkouts(userId)
+
+    const workouts = [];
+
+    allWorkouts.map(async (workout) => {
+        if(workout.type === 'Session'){
+            console.log("rest: I got a session workout!")
+
+            const sessions = await model.getSessions(workout.id)
+
+            console.log("rest: And the sessions for this workout is: ", sessions)
+            workouts.push({
+                workout: workout,
+                sessions: sessions
+            })
+        } else {
+            workouts.push(workout)
+        }
+    })
+
+    console.log("rest controller is sending this to frontend: ", workouts)
+
     res.json({
+        workouts: workouts
     });
 });
 
-router.get('/addworkout', async function (req, res) {
+router.post('/addworkout', async function (req, res) {
     res.json({
     });
 });
