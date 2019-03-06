@@ -75,10 +75,10 @@ router.get('/validateuser/:email/:password', async function (req, res){
 });
 
 router.get('/createuser/:email/:password/:name/:sex/:height/:weight', async function (req, res){
-    await model.createUser(req.params.email, req.params.password, req.params.name, req.params.sex, req.params.height, req.params.weight)
-    var users = await model.getUsers();
+    var user = await model.createUser(req.params.email, req.params.password)
+    var userInfo = await model.createUserInfo(user, req.params.name, req.params.sex, req.params.height, req.params.weight)
     res.json({
-        express : "Test"
+        express : "Done"
     })
 });
 
