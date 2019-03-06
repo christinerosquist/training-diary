@@ -3,10 +3,12 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/getworkouts', async function (req, res) {
-    const workouts = await model.getLatestActivities();
+    const workouts = await model.getWorkouts()
+    const sessions = await model.getSessions()
 
     res.json({
-        workouts: workouts
+        workouts: workouts,
+        sessions: sessions
     });
 });
 

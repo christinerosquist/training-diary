@@ -17,13 +17,23 @@
     module.exports = () => {
 
     // Setting up connection between db and sequelize
-    // man skulle kunna ta bort alla foreign keys och istället skapa dem via Sequelize
+    // man skulle kunna ta bort alla foreign keys och istället skapa dem via Sequelize?
     // vi kan även ha UUID istället på alla ID
         const User = sequelize.define('user', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
+                autoIncrement: true
             },
+<<<<<<< HEAD
+=======
+            hash: {
+                type: Sequelize.STRING
+            },
+            salt: {
+                type: Sequelize.STRING
+            }
+>>>>>>> 31ebc24e4a09498a51735fa4871dc7eed24868d5
             email: {
                 type: Sequelize.STRING
             },
@@ -58,6 +68,10 @@
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true
+        },
+        user_id: {
+            type: Sequelize.INTEGER
         },
         name: {
             type: Sequelize.STRING
@@ -81,8 +95,9 @@
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true
         },
-        user_id: {
+        group_training_id: {
             type: Sequelize.INTEGER
         },
         type: {
@@ -104,11 +119,9 @@
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true
         },
         exercise_id: {
-            type: Sequelize.INTEGER
-        },
-        workout_id: {
             type: Sequelize.INTEGER
         },
         weight: {
@@ -126,10 +139,29 @@
         freezeTableName: true
     });
 
+    const SessionWorkout = sequelize.define('session_workout', {
+        name: Sequelize.STRING
+    },
+    {
+        timestamps: false,
+        underscored: true,
+        freezeTableName: true
+    });
+
+    const PersonalWorkout = sequelize.define('personal_workout', {
+        name: Sequelize.STRING
+    },
+    {
+        timestamps: false,
+        underscored: true,
+        freezeTableName: true
+    });
+
     const Exercise = sequelize.define('exercise', {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true
         },
         name: {
             type: Sequelize.STRING
@@ -146,10 +178,11 @@
         freezeTableName: true
     });
 
-    const GroupTraining = sequelize.define('exercise', {
+    const GroupTraining = sequelize.define('group_training', {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true
         },
         name: {
             type: Sequelize.STRING
@@ -170,6 +203,7 @@
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true
         },
         date: {
             type: Sequelize.DATE
@@ -188,6 +222,7 @@
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
+            autoIncrement: true
         },
         date: {
             type: Sequelize.DATE
@@ -218,19 +253,17 @@
      and getWorkouts, setWorkouts, addWorkout, and addWorkouts to Session.
      Same for user and workout.
      **/
-    Session.belongsToMany(Workout, {through: 'SessionWorkout'})
-    Workout.belongsToMany(Session, {through: 'SessionWorkout'})
-
-    GroupTraining.hasMany(Workout)
-    GroupTraining.belongsTo(Workout)
-
-    User.belongsToMany(Workout, {through: 'PersonalWorkout'})
-    Workout.belongsToMany(User, {through: 'PersonalWorkout'})
+    Session.belongsToMany(Workout, {through: SessionWorkout})
+    Workout.belongsToMany(Session, {through: SessionWorkout})
+    //
+    GroupTraining.hasMany(Workout, {foreignKey: 'group_training_id', sourceKey: 'id'}) // groupTraining.getWorkouts()
+    Workout.belongsTo(GroupTraining, {foreignKey: 'group_training_id', targetKey: 'id'})
+    //
+    User.belongsToMany(Workout, {through: PersonalWorkout})
+    Workout.belongsToMany(User, {through: PersonalWorkout})
 
     return {
-        User, UserInfo, Session, Workout, Exercise, GroupTraining, MuscleMassProgress, WeightProgress
+        User, UserInfo, Session, Workout, Exercise, GroupTraining, MuscleMassProgress, WeightProgress, sequelize
     }
-
-
 
 }

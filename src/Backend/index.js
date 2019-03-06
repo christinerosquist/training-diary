@@ -14,7 +14,13 @@ io.on('connection', socket => {
 });
 
 const model = require('./model.js');
-model.getLatestActivities()
+model.getWorkouts()
+model.getSessions()
+model.createSession().then(created => {
+    model.addSession(created).then(added => {
+        model.getSessions()
+    })
+})
 
 
 listen(port, () => {
