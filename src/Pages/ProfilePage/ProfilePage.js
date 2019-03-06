@@ -6,6 +6,16 @@ import Progress from "../../Components/Progress/Progress";
 import Diary from "../../Components/Diary/Diary";
 
 class ProfilePage extends Component {
+    constructor() {
+        super()
+    }
+
+    componentDidMount() {
+        console.log(this.props.params.id)
+        fetch('/api/profile/' + this.props.params.id)
+            .then(res => res.json())
+            .then(data => console.log(data))
+    }
     render() {
         return (
             <div>
