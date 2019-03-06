@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Login from "./Login";
+import Redirect from "react-router-dom/es/Redirect";
 import {Link} from "react-router-dom";
 
 class CreateUser extends Component {
@@ -41,8 +42,9 @@ class CreateUser extends Component {
     createUser(email, password, name, sex, height, weight){
         this.callBackendAPI(email, password, name, sex, height, weight)
             .then(async res => {
-                if (res.user != "Invalid") {
+                if (res.express == "Done") {
                     console.log("User created");
+                    this.setState({redirect:true});
                 } else alert("Could not create user")
             })
             .catch(err => console.log(err))
@@ -101,6 +103,10 @@ class CreateUser extends Component {
 
 
     render() {
+        if (this.state.redirect) {
+            return <Redirect to='/'/>;
+        }
+
         return (
             <div>
                 <div className="container" id="loginContainer">

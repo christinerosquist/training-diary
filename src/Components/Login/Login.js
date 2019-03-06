@@ -13,6 +13,7 @@ class Login extends Component {
             email: '',
             password: '',
             redirect: false,
+            wrongPassword: false
         }
 
         this.handleEmail = this.handleEmail.bind(this);
@@ -36,8 +37,10 @@ class Login extends Component {
         this.callBackendAPI(email, password)
             .then(async res => {
                 if (res.user != "Invalid") {
-                    this.setState({ redirect: true }); //TODOsparar användaren som loggar in (vilket är user)
-                } else alert("Could not log in. Please check that your email and password are correct.")
+                    this.setState({ redirect: true, wrongPassword: false }); //TODOsparar användaren som loggar in (vilket är user)
+                } else {
+                    this.setState({wrongPassword:true});
+                }
             })
             .catch(err => console.log(err))
 
@@ -55,8 +58,13 @@ class Login extends Component {
         })
     }
 
-    handleSubmitBtn() { //Hantera bättre ifall man skickar tomma fält?
-         this.validateUser(this.state.email, this.state.password)
+    handleSubmitBtn() {
+        if(this.state.email == '' || this.state.password == ''){
+            this.setState({wrongPassword:true});
+
+        } else{
+            this.validateUser(this.state.email, this.state.password)
+        }
     }
 
     handleForm(e){
@@ -80,6 +88,7 @@ class Login extends Component {
                             <label >Password</label>
                             <input type="password" className="form-control" value={this.state.password} onChange={this.handlePassword} id="exampleInputPassword1" placeholder="Password"/>
                         </div>
+                        {this.state.wrongPassword && <p id='wrongPasswordId'>Could not log in, please check your email or password.</p>}
                         <button type="submit" onClick={this.handleSubmitBtn } className="btn btn-primary">Submit</button>
                     </form>
                     <Link to="/createUser"> <button type="submit" onClick={this.handleSubmitBtn} className="btn btn-primary" id="signUpBtn"> Sign Up</button></Link>

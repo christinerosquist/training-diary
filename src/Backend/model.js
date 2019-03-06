@@ -2,16 +2,26 @@ const crypto = require('crypto');
 const seq = require("./sequelize.js")
 const {User, UserInfo, Session, Workout, Exercise, GroupTraining, MuscleMassProgress, WeightProgress, sequelize} = seq()
 
-exports.createUser = (email, password, name, sex, height, weight) => {
+exports.createUser = (email, password) => {
     var salt = crypto.randomBytes(16).toString('hex');
     return User.create({
-        id: 1, //Ändra så att den genererar en ny GUID typ varje gång
         //Skapar ett unikt saltvärde för en specifik användare
         salt: salt,
         // hashing user's salt and password with 1000 iterations, 64 length and sha512 digest
         hash: crypto.pbkdf2Sync(password, salt,1000, 64, `sha512`).toString(`hex`), //Hashar
         email: email
     }).then(data => {return data})
+}
+
+exports.createUserInfo = (user, name, sex, height, weight) => {
+    return UserInfo.create({
+        user_id: user.dataValues.id,
+        name: name,
+        sex: sex,
+        height: parseInt(height),
+        current_weight: parseInt(weight)
+    }).then(data => {return data})
+
 }
 
 exports.getLatestActivities = () => {
@@ -88,7 +98,6 @@ exports.addSession = (session) => {
 }
 
 exports.getUsers = () => {
-    console.log("Got here")
     return User.findAll() // HÄR KAN MAN ÄNDRA FÖR ATT TESTA OLIKA TABELLER
         .then(data => { return data })
         .catch(error => {console.log(error)})
