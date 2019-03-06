@@ -42,10 +42,9 @@ router.get('/testconnection', async function (req, res) {
 });
 
 router.get('/validateuser/:email/:password', async function (req, res){
-    console.log("Got here lol");
     var users = await model.getUsers(); //Gets all the users from the db
     var validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
-    if(validUser != null){ //Antar att man bör göra detta snyggare haha
+    if(validUser != null){
         res.json({
             user : validUser
         })
@@ -55,5 +54,12 @@ router.get('/validateuser/:email/:password', async function (req, res){
     })
 });
 
+router.get('/createuser/:email/:password/:name/:sex/:height/:weight', async function (req, res){
+    await model.createUser(req.params.email, req.params.password, req.params.name, req.params.sex, req.params.height, req.params.weight)
+    var users = await model.getUsers();
+    res.json({
+        express : "Test"
+    })
+});
 
 module.exports = router; // export the router with the functions for the urls.

@@ -16,7 +16,7 @@ io.on('connection', socket => {
 const model = require('./model.js');
 model.getWorkouts()
 model.getSessions()
-model.createSession().then(created => {
+model.createSession(1, 60, 5, 1).then(created => {
     model.addSession(created).then(added => {
         model.getSessions()
     })

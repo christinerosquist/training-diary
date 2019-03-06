@@ -39,12 +39,29 @@ exports.getSessions = () => {
         .catch(error => {console.log(error)})
 }
 
-exports.createSession = () => {
+exports.createSession = (eid, wei, set, rep) => {
     return Session.create({
-        exercise_id: 1,
-        weight: 14,
-        sets: 3,
-        reps: 5
+        exercise_id: eid,
+        weight: wei,
+        sets: set,
+        reps: rep
+    }).then(newSession => {
+        return newSession
+    })
+}
+exports.addSession = (session) => {
+    return Workout.findByPk(1)
+        .then(workout => {
+            workout.addSession(session)
+        })
+        .catch(error => {console.log(error)})
+}
+exports.createSession = (eid, wei, set, rep) => {
+    return Session.create({
+        exercise_id: eid,
+        weight: wei,
+        sets: set,
+        reps: rep
     }).then(newSession => {
         return newSession
     })
