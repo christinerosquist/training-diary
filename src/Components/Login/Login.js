@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './Login.css'
 import Redirect from "react-router-dom/es/Redirect";
+import {Link} from "react-router-dom";
 
 
 class Login extends Component {
@@ -32,11 +33,10 @@ class Login extends Component {
     }
 
     validateUser(email, password){
-        console.log(email + password)
         this.callBackendAPI(email, password)
             .then(async res => {
                 if (res.user != "Invalid") {
-                    this.setState({ redirect: true });
+                    this.setState({ redirect: true }); //TODOsparar användaren som loggar in (vilket är user)
                 } else alert("Could not log in. Please check that your email and password are correct.")
             })
             .catch(err => console.log(err))
@@ -47,18 +47,16 @@ class Login extends Component {
         this.setState({
             email: event.target.value,
         })
-        console.log("email updated")
     }
 
     handlePassword(event) {
         this.setState({
             password: event.target.value,
         })
-        console.log("password updated")
     }
 
-    handleSubmitBtn() {
-        this.validateUser(this.state.email, this.state.password)
+    handleSubmitBtn() { //Hantera bättre ifall man skickar tomma fält?
+         this.validateUser(this.state.email, this.state.password)
     }
 
     handleForm(e){
@@ -84,6 +82,7 @@ class Login extends Component {
                         </div>
                         <button type="submit" onClick={this.handleSubmitBtn } className="btn btn-primary">Submit</button>
                     </form>
+                    <Link to="/createUser"> <button type="submit" onClick={this.handleSubmitBtn} className="btn btn-primary" id="signUpBtn"> Sign Up</button></Link>
                 </div>
             </div>
         );

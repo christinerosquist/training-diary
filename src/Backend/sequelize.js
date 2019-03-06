@@ -24,18 +24,15 @@
                 primaryKey: true,
                 defaultValue: Sequelize.UUIDV1
             },
-            hash: {
-                type: Sequelize.STRING
-            },
-            salt: {
-                type: Sequelize.STRING
-            },
             email: {
                 type: Sequelize.STRING
             },
-            // hash: Sequelize.STRING,
-            // salt: Sequelize.STRING,
-        }, {
+            hash: {
+                type: Sequelize.TEXT('long'),
+            },
+            salt: {
+                type: Sequelize.STRING,
+            }, {
             timestamps: false,
             underscored: true,
             freezeTableName: true,
@@ -56,6 +53,7 @@
                     return this.hash === hash;
                 }
             }
+        }
         });
 
 
