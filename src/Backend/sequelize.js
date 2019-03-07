@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('rosquis', 'rosquisadmin', 'upa6fooBie', {
-    host: 'mysql-vt2019.csc.kth.se',
-    //host: '2001:6b0:1:1300:250:56ff:fe01:25a',
+    //host: 'mysql-vt2019.csc.kth.se',
+    host: '2001:6b0:1:1300:250:56ff:fe01:25a',
     dialect: 'mysql',
     operatorsAliases: false,
     logging: false,
@@ -114,15 +114,6 @@ module.exports = () => {
         freezeTableName: true
     });
 
-    const SessionWorkout = sequelize.define('session_workout', {
-            name: Sequelize.STRING
-        },
-        {
-            timestamps: false,
-            underscored: true,
-            freezeTableName: true
-        });
-
     const Exercise = sequelize.define('exercise', {
         id: {
             type: Sequelize.UUID,
@@ -171,6 +162,9 @@ module.exports = () => {
             primaryKey: true,
             defaultValue: Sequelize.UUIDV1
         },
+        user_id: {
+            type: Sequelize.UUID
+        },
         date: {
             type: Sequelize.DATE
         },
@@ -182,6 +176,10 @@ module.exports = () => {
             }
         },
 
+    }, {
+        underscored: true,
+        freezeTableName: true,
+        timestamps: false
     });
 
     const WeightProgress = sequelize.define('weight_progress', {
@@ -190,12 +188,19 @@ module.exports = () => {
             primaryKey: true,
             defaultValue: Sequelize.UUIDV1
         },
+        user_id: {
+            type: Sequelize.UUID
+        },
         date: {
             type: Sequelize.DATE
         },
         kg: {
             type: Sequelize.INTEGER,
         },
+    }, {
+        underscored: true,
+        timestamps: false,
+        freezeTableName: true
     });
 
     /**
@@ -203,8 +208,13 @@ module.exports = () => {
      BelongsTo will add the foreignKey on the source where hasOne will add on the target
      **/
     User.hasOne(UserInfo, {foreignKey: 'user_id'}, {as: 'Info'}) // should be able to use user.getInfo()
-    User.hasOne(MuscleMassProgress, {foreignKey: 'user_id'}, {as: 'MMP'}) // user.getMMP()
-    User.hasOne(WeightProgress, {foreignKey: 'user_id'}, {as: 'WP'}) // user.getWP()
+
+
+    User.hasMany(MuscleMassProgress, {foreignKey: 'user_id', sourceKey: 'id', as: 'MMPs'}) // user.getMMPs()
+    MuscleMassProgress.belongsTo(User, {foreignKey: 'user_id', targetKey: 'id'})
+
+    User.hasMany(WeightProgress, {foreignKey: 'user_id', sourceKey: 'id', as: 'WPs'}) // user.getWPs()
+    WeightProgress.belongsTo(User, {foreignKey: 'user_id', targetKey: 'id'})
 
     Exercise.hasMany(Session, {foreignKey: 'exercise_id', sourceKey: 'id'}) // enables exercise.getSessions()
     Session.belongsTo(Exercise, {foreignKey: 'exercise_id', targetKey: 'id'}) // enables session.getExercise()
@@ -215,7 +225,7 @@ module.exports = () => {
     GroupTraining.hasMany(Workout, {foreignKey: 'group_training_id', sourceKey: 'id'}) // groupTraining.getWorkouts()
     Workout.belongsTo(GroupTraining, {foreignKey: 'group_training_id', targetKey: 'id'}) // not sure if workout.getGroupTraining() works
 
-    User.hasMany(Workout, {foreignKey: 'user_id', sourceKey: 'id'}) // user.getWorkouts()
+    User.hasMany(Workout, {foreignKey: 'user_id', sourceKey: 'id', as: 'SeqWorkouts'}) // user.getSeqWorkouts()
     Workout.belongsTo(User, {foreignKey: 'user_id', targetKey: 'id'})
 
     // /** belongsToMany: http://docs.sequelizejs.com/manual/tutorial/associations.html#belongs-to-many-associations

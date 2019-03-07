@@ -29,11 +29,25 @@ router.get('/getgrouptraining/:id', async function (req, res) {
     })
 });
 
-router.get('/feed', async function (req, res) {
-    const entries = await model.getAllWorkouts()
+router.get('/getprogress/:id', async function (req, res) {
+    const user_id = req.params.id
+    const muscledata = await model.getMuscleProgress(user_id)
+    const weightdata = await model.getWeightProgress(user_id)
 
     res.json({
-        entries: entries
+        muscledata: muscledata,
+        weightdata: weightdata
+    })
+});
+
+router.get('/feed', async function (req, res) {
+    const entries = await model.getFeedWorkouts()
+    const exEntries = await model.createWorkoutObject(entries)
+
+    console.log(exEntries)
+
+    res.json({
+        entries: exEntries
     });
 });
 

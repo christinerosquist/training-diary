@@ -18,7 +18,7 @@ class ProfilePage extends Component {
                 </div>
                 <div className="container appContainer">
                     <ProfileHeader/>
-                    <Progress/>
+                    <Progress user_id={this.props.params.id}/>
                     <Diary user_id={this.props.params.id}/>
                 </div>
             </div>

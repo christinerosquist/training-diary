@@ -13,15 +13,6 @@ io.on('connection', socket => {
     socketController(socket, io);
 });
 
-const model = require('./model.js');
-model.getWorkouts()
-model.getSessions()
-model.createSession(1, 60, 5, 1).then(created => {
-    model.addSession(created).then(added => {
-        model.getSessions()
-    })
-})
-
 
 listen(port, () => {
     console.log("server listening on port", port);

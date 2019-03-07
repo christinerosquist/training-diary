@@ -24,11 +24,17 @@ exports.createUserInfo = (user, name, sex, height, weight) => {
 
 }
 
-// Get all workouts from user
-exports.getWorkouts = (userId) => {
-    return User.findByPk(userId) // user1
+exports.getUserInfo = (id) => {
+    return UserInfo.findByPk(id)
+        .then(data => {return data})
+        .error(e => console.log(e))
+}
+
+// Get all workouts from user with userId
+exports.getWorkouts = (user_id) => {
+    return User.findByPk(user_id) // user1
         .then(user => {
-            return user.getWorkouts()
+            return user.getSeqWorkouts()
                 .then(workouts => {
                     return workouts
                 })
@@ -48,10 +54,35 @@ exports.getSessions = (workout_id) => {
         .catch(error => {console.log(error)})
 }
 
-exports.getAllWorkouts = () => {
-    return Workout.findAll({limit: 1, reverse: true})
+// Get the 5 latest workouts that has been added
+exports.getFeedWorkouts = () => {
+    return Workout.findAll({limit: 5, order: [['date', 'DESC']]})
         .then(workouts => {return workouts})
         .catch(error => console.log(error))
+}
+
+// Get the muscle progress entries of a user with user_id
+exports.getMuscleProgress = (user_id) => {
+    return User.findByPk(user_id)
+        .then(user => {
+            return user.getMMPs()
+                .then(progress => {
+                    return progress
+                })
+        })
+        .catch(e => console.log(e))
+}
+
+// Get the weight progress of a user with user_id
+exports.getWeightProgress = (user_id) => {
+    return User.findByPk(user_id)
+        .then(user => {
+            return user.getWPs()
+                .then(progress => {
+                    return progress
+                })
+        })
+        .catch(e => console.log(e))
 }
 
 exports.getGroupTraining = (id) => {
@@ -115,6 +146,7 @@ exports.validateUser = (users, email, password) => {
     }
     else return userToReturn;
 }
+
 
 function validatePassword (user, password) {
     var hash = crypto.pbkdf2Sync(password, user.dataValues.salt, 1000, 64, `sha512`).toString(`hex`);

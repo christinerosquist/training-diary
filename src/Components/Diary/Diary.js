@@ -27,7 +27,7 @@ class Diary extends Component {
         if(this.state[workout_id] === undefined) {
             console.log("I don't have any saved data, so lets get some!")
 
-            if (workout_type === 'Session') {
+            if (workout_type === 'Gym Session') {
 
                 fetch('/api/getsessions/' + workout_id)
                     .then(res => res.json())
@@ -71,7 +71,7 @@ class Diary extends Component {
                             <div id={'collapse' + workout.id} className="collapse"
                                  aria-labelledby={'heading' + workout.id} data-parent="#accordion">
                                 <div className="card-body">
-                                    {workout.type === 'Session' && this.state[workout.id] !== undefined &&
+                                    {workout.type === 'Gym Session' && this.state[workout.id] !== undefined &&
                                         JSON.stringify(this.state[workout.id])
                                     }
 
