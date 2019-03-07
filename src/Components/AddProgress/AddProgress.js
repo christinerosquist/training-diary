@@ -10,7 +10,9 @@ class AddProgress extends Component {
         this.state = {
             mode: 'weight',
             date: new Date(),
-            inputkg: ''
+            inputkg: null,
+            percent: null,
+            updated: false
         }
 
         this.setWeightMode = this.setWeightMode.bind(this)
@@ -34,14 +36,19 @@ class AddProgress extends Component {
     }
 
     updateInputValue = (e) => {
-        this.setState({inputkg: e.target.value})
+        if(this.state.mode === 'weight') {
+            this.setState({inputkg: e.target.value})
+        } else {
+            this.setState({percent: e.target.value})
+        }
     }
 
     handleAddProgress = () => {
         const weight = this.state.inputkg
         const date = moment(this.state.date).format("YYYY-MM-DD")
 
-
+        this.setState({updated: true})
+        setTimeout(function(){this.setState({updated: false})}.bind(this), 3000)
     }
 
     render() {
@@ -52,13 +59,11 @@ class AddProgress extends Component {
                     <button type="button" onClick={this.setMuscleMode} className={'btn btn-primary ' + (this.state.mode === 'muscle' ? 'active disabled': '')}>Log muscle</button>
                 </div>
 
-                {
-                    this.state.mode === 'weight' &&
                     <div>
                         <form id="inputweight">
                             <div className="form-group">
-                                <b>Enter weight:</b>
-                                <input autoComplete="off" type="text" onChange={this.updateInputValue} className="form-control" id="formGroupExampleInput" placeholder="Enter weight in kg"/>
+                                <b>Enter {this.state.mode} in {this.state.mode === 'weight' ? 'kg' : 'percent'}:</b>
+                                <input autoComplete="off" type="text" onChange={this.updateInputValue} className="form-control" id="formGroupExampleInput" placeholder={'Enter ' + this.state.mode}/>
                             </div>
                         </form>
 
@@ -70,9 +75,9 @@ class AddProgress extends Component {
                             />
                         </div>
 
-                        <button className={'btn btn-primary ' + (this.state.inputkg === '' ? 'disabled' : '')}>Submit</button>
+                        <button onClick={this.handleAddProgress} className={'btn btn-primary ' + (this.state.inputkg === null ? 'disabled' : '')}>Submit</button>
+                        {this.state.updated && <div><br /><p>Your progress was updated!</p></div>}
                     </div>
-                }
 
             </div>
         );
