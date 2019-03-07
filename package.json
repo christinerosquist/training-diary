@@ -19,6 +19,7 @@
     "react-expandable-table": "0.0.6",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",
+    "react-spinners": "^0.5.3",
     "sequelize": "^4.42.1",
     "socket.io": "^2.2.0",
     "typescript": "^3.3.3333"

@@ -12,11 +12,16 @@ router.get('/profile/:id', async function (req, res) {
 });
 
 router.get('/getsessions/:id', async function (req, res) {
+    console.log("got here haha")
     const workout_id = req.params.id
-    const sessions = await model.getSessions(workout_id)
+    const sessions = await model.getSessions(workout_id);
+    const exercises = await model.getExercises(sessions);
+    console.log(exercises);
+    console.log(sessions);
 
     res.json({
-        sessions: sessions
+        sessions: sessions,
+        exercises: exercises
     })
 });
 

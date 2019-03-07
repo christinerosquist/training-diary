@@ -97,6 +97,26 @@ exports.getSessions = (workout_id) => {
         .catch(error => {console.log(error)})
 }
 
+function getExercise(exerciseId) {
+    return Exercise.findByPk(exerciseId)
+        .then(exercise =>{
+            return exercise
+        })
+        .catch(error => console.log(error));
+}
+
+exports.getExercises = async (sessions) => {
+    var i;
+    var exercises = [];
+    for(i = 0; i < sessions.length; i++){
+        var session = sessions[i];
+        var exerciseId = session.dataValues.exercise_id;
+        var exercise = await getExercise(exerciseId);
+        exercises.push(exercise);
+    }
+    return exercises;
+}
+
 // Get the 5 latest workouts that has been added
 exports.getFeedWorkouts = () => {
     return Workout.findAll({limit: 5, order: [['date', 'DESC']]})
