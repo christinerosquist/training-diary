@@ -31,6 +31,7 @@ exports.getWorkouts = (userId) => {
                 .then(workouts => {
                     return workouts
                 })
+            })
 }
 
 exports.getAllWorkouts = () => {

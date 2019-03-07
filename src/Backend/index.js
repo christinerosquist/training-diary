@@ -14,10 +14,8 @@ io.on('connection', socket => {
 });
 
 const model = require('./model.js');
-let gtID = "1"
-let userID = "1"
 
-model.makeWorkout(userID, gtID, "12 mars 2019")
+//model.makeWorkout(userID, gtID, "12 mars 2019")
 
 // model.getGroupTrainings().then((gts) => {
 //     console.log(gts)
