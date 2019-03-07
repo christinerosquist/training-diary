@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Header from "../../Components/Header/Header";
 import Navbar from "../../Components/Navbar/Navbar";
+import AddProgress from "../../Components/AddProgress/AddProgress";
 
 class AddProgressPage extends Component {
     render() {
@@ -11,7 +12,7 @@ class AddProgressPage extends Component {
                     <Navbar/>
                 </div>
                 <div className="container appContainer">
-                    hej
+                    <AddProgress/>
                 </div>
             </div>
         );

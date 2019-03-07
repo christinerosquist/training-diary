@@ -1,0 +1,16 @@
+#inputweight {
+    width: 30%;
+    margin: 0 auto;
+}
+
+#calendarContainer {
+    margin: 10px auto;
+    width: 50%;
+}
+
+.react-calendar{
+    width: 100%;
+}
+.btn:disabled {
+    background-color: #cccccc;
+}

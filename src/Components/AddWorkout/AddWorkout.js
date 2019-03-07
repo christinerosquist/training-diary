@@ -44,8 +44,8 @@ class AddWorkout extends Component {
         return (
             <div className="container centered">
                 <div className="btn-group" style={{marginBottom: '30px'}}>
-                    <button type="button" onClick={this.setGroupMode} className={'btn btn-primary' + (this.state.mode === 'group' ? 'active disabled': '')}>Group Training</button>
-                    <button type="button" onClick={this.setGymMode} className={'btn btn-primary' + (this.state.mode === 'gym' ? 'active disabled': '')}>Gym session</button>
+                    <button type="button" onClick={this.setGroupMode} className={'btn btn-primary ' + (this.state.mode === 'group' ? 'active disabled': '')}>Group Training</button>
+                    <button type="button" onClick={this.setGymMode} className={'btn btn-primary ' + (this.state.mode === 'gym' ? 'active disabled': '')}>Gym session</button>
                 </div>
 
                 {   // the choose group training page
