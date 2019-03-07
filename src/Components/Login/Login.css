@@ -17,6 +17,10 @@
     margin-top: 10px;
 }
 
+#wrongPasswordId{
+    color: #ff2f25;
+}
+
 @media only screen and (max-width: 700px) {
     #loginContainer {
         width: 90%;

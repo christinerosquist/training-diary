@@ -14,9 +14,9 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.callBackendAPI()
-            .then(res => console.log(res))
-            .catch(err => console.log(err))
+        // this.callBackendAPI()
+        //     .then(res => console.log(res))
+        //     .catch(err => console.log(err))
     }
 
     callBackendAPI = async () => {
@@ -37,7 +37,7 @@ class App extends Component {
                         <Route exact path='/' render={(props) => <LoginPage/>}/>
                         <Route path='/createuser' render={() => <CreateUserPage />}/>
                         <Route path='/feed' render={() => <FeedPage />}/>
-                        <Route path='/profile:id' render={({props}) => <ProfilePage/>}/>
+                        <Route path='/profile/:id' render={({location, match}) => <ProfilePage params={match.params}/>}/>
                         <Route path='/addworkout' render={(props) => <AddWorkoutPage/>}/>
                         <Route path='/addprogress' render={(props) => <AddProgressPage/>}/>
                     </Switch>

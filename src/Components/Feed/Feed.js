@@ -7,9 +7,18 @@ class Feed extends Component {
         super(props)
 
         this.state = {
-            search: ''
+            entries: []
         }
+    }
 
+    componentDidMount() {
+        fetch('/api/feed')
+            .then(res => res.json())
+            .then(data => {
+                console.log(data.entries)
+                this.setState({entries: data.entries})
+            })
+            .catch(error => console.log(error))
     }
 
 

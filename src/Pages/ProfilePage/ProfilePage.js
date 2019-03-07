@@ -6,6 +6,9 @@ import Progress from "../../Components/Progress/Progress";
 import Diary from "../../Components/Diary/Diary";
 
 class ProfilePage extends Component {
+    constructor() {
+        super()
+    }
     render() {
         return (
             <div>
@@ -16,7 +19,7 @@ class ProfilePage extends Component {
                 <div className="container appContainer">
                     <ProfileHeader/>
                     <Progress/>
-                    <Diary/>
+                    <Diary user_id={this.props.params.id}/>
                 </div>
             </div>
         );

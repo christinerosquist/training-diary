@@ -10,7 +10,7 @@ class FeedItem extends Component {
         const { user_name, duration, workout_type, likes} = this.props.activity;
         return (
             <div id="feedRow" className='row no-gutters'>
-                <div className='col-sm-6 leftCol' align="center">
+                <div className='col-sm-6 leftCol'>
                     <img id="feedImg" src={this.props.activity.img} alt="Feed"/>
                 </div>
                 <div className='col-sm-6 rightCol'>

@@ -25,6 +25,11 @@ code {
     margin: 0px auto 0;
 }
 
+.centered {
+    padding: 20px;
+    text-align: center;
+}
+
 @media only screen and (min-width: 701px) and (max-width: 1200px) {
     .appContainer {
         width: 75%;

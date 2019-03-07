@@ -2,22 +2,42 @@ const model = require("../model.js");
 const express = require('express');
 const router = express.Router();
 
-router.get('/getworkouts', async function (req, res) {
-    const workouts = await model.getWorkouts()
-    const sessions = await model.getSessions()
-
-    res.json({
-        workouts: workouts,
-        sessions: sessions
-    });
-});
-
 router.get('/profile/:id', async function (req, res) {
+    const user_id = req.params.id
+    const workouts = await model.getWorkouts(user_id)
+
     res.json({
+        workouts: workouts
     });
 });
 
-router.get('/addworkout', async function (req, res) {
+router.get('/getsessions/:id', async function (req, res) {
+    const workout_id = req.params.id
+    const sessions = await model.getSessions(workout_id)
+
+    res.json({
+        sessions: sessions
+    })
+});
+
+router.get('/getgrouptraining/:id', async function (req, res) {
+    const workout_id = req.params.id
+    const group_training = await model.getGroupTraining(workout_id)
+
+    res.json({
+        group_training: group_training
+    })
+});
+
+router.get('/feed', async function (req, res) {
+    const entries = await model.getAllWorkouts()
+
+    res.json({
+        entries: entries
+    });
+});
+
+router.post('/addworkout', async function (req, res) {
     res.json({
     });
 });
@@ -55,10 +75,10 @@ router.get('/validateuser/:email/:password', async function (req, res){
 });
 
 router.get('/createuser/:email/:password/:name/:sex/:height/:weight', async function (req, res){
-    await model.createUser(req.params.email, req.params.password, req.params.name, req.params.sex, req.params.height, req.params.weight)
-    var users = await model.getUsers();
+    var user = await model.createUser(req.params.email, req.params.password)
+    var userInfo = await model.createUserInfo(user, req.params.name, req.params.sex, req.params.height, req.params.weight)
     res.json({
-        express : "Test"
+        express : "Done"
     })
 });
 
