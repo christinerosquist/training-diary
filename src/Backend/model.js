@@ -12,7 +12,6 @@ exports.createUser = (email, password) => {
         email: email
     }).then(data => {return data})
 }
-
 exports.createUserInfo = (user, name, sex, height, weight) => {
     return UserInfo.create({
         user_id: user.dataValues.id,
@@ -38,9 +37,51 @@ exports.getWorkouts = (user_id) => {
                 .then(workouts => {
                     return workouts
                 })
+            })
+}
+
+exports.getAllWorkouts = () => {
+    return Workout.findAll()
+        .then(workouts => {
+        // console.log("number of workouts: " + workouts.length)
+        // console.log(workouts)
+        return workouts
         })
         .catch(error => {console.log(error)})
 }
+
+exports.getAllUsers = () => {
+    console.log("Got here")
+    return User.findAll() // HÄR KAN MAN ÄNDRA FÖR ATT TESTA OLIKA TABELLER
+        .then(data => {
+            console.log("number of users: " + data.length)
+            return data
+        })
+        .catch(error => {console.log(error)})
+}
+
+exports.getUser = (userID) => {
+    return User.findByPk(userID)
+        .then(user => {
+            return user
+        })
+        .catch(error => {console.log(error)})
+}
+
+exports.getAllGroupTrainings = () => {
+    return GroupTraining.findAll()
+        .then(gts => {
+            return gts
+        })
+        .catch(error => {console.log(error)})
+}
+ exports.getGroupTraining = (gtID) => {
+     return GroupTraining.findByPk(gtID)
+        .then(gt => {
+            return gt
+        })
+        .catch(error => {console.log(error)})
+ }
 
 // Get all sessions that belongs to the workout with workoutId
 exports.getSessions = (workout_id) => {
@@ -48,6 +89,8 @@ exports.getSessions = (workout_id) => {
         .then(workout => {
             return workout.getSessions()
                 .then(sessions => {
+                    console.log("number of sessions: " + sessions.length)
+                    console.log(sessions)
                     return sessions
                 })
         })
@@ -93,44 +136,42 @@ exports.getGroupTraining = (id) => {
         .catch(error => console.log(error))
 }
 
-exports.createSession = (eid, wei, set, rep) => {
+exports.createSession = (exercise, workout, wei, set, rep) => {
     return Session.create({
-        exercise_id: eid,
         weight: wei,
         sets: set,
         reps: rep
     }).then(newSession => {
+        newSession.setExercise(exercise)
+        workout.addSession(newSession)
         return newSession
     })
-}
-exports.addSession = (session) => {
-    return Workout.findByPk(1)
-        .then(workout => {
-            workout.addSession(session)
-        })
-        .catch(error => {console.log(error)})
-}
-exports.createSession = (eid, wei, set, rep) => {
-    return Session.create({
-        exercise_id: eid,
-        weight: wei,
-        sets: set,
-        reps: rep
-    }).then(newSession => {
-        return newSession
-    })
-}
-exports.addSession = (session) => {
-    return Workout.findByPk(1)
-        .then(workout => {
-            workout.addSession(session)
-        })
-        .catch(error => {console.log(error)})
 }
 
-exports.getUsers = () => {
-    return User.findAll() // HÄR KAN MAN ÄNDRA FÖR ATT TESTA OLIKA TABELLER
-        .then(data => { return data })
+exports.createExercise = (name, caloriesUpon, calories) => {
+    return Exercise.create({
+        name: name,
+        define_calories_upon: caloriesUpon,
+        calories: calories
+    }).then(newExercise => {
+        return newExercise
+    })
+}
+
+exports.createGroupTraining = (name, duration, calories) => {
+    return GroupTraining.create({
+        name: name,
+        duration: duration,
+        calories_per_minute: calories
+    }).then(newGT => {
+        return newGT
+    })
+}
+exports.addSession = (session) => {
+    return Workout.findByPk(1)
+        .then(workout => {
+            workout.addSession(session)
+        })
         .catch(error => {console.log(error)})
 }
 
@@ -152,4 +193,3 @@ function validatePassword (user, password) {
     var hash = crypto.pbkdf2Sync(password, user.dataValues.salt, 1000, 64, `sha512`).toString(`hex`);
     return user.dataValues.hash === hash; //Returnerar true om det är samma lösen annars ej
 }
-

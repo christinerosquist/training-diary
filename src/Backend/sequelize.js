@@ -72,9 +72,6 @@ module.exports = () => {
             primaryKey: true,
             defaultValue: Sequelize.UUIDV1
         },
-        group_training_id: {
-            type: Sequelize.INTEGER
-        },
         type: {
             type: Sequelize.STRING
         },
@@ -88,6 +85,27 @@ module.exports = () => {
         timestamps: false,
         underscored: true,
         freezeTableName: true
+    });
+
+    const GroupTraining = sequelize.define('group_training', {
+        id: {
+            type: Sequelize.UUID,
+            primaryKey: true,
+            defaultValue: Sequelize.UUIDV1
+        },
+        name: {
+            type: Sequelize.STRING
+        },
+        duration: {
+            type: Sequelize.INTEGER
+        },
+        calories_per_minute: {
+            type: Sequelize.INTEGER
+        }
+    }, {
+        timestamps: false,
+        freezeTableName: true,
+        underscored: true
     });
 
     const Session = sequelize.define('session', {
@@ -133,27 +151,6 @@ module.exports = () => {
         timestamps: false,
         underscored: true,
         freezeTableName: true
-    });
-
-    const GroupTraining = sequelize.define('group_training', {
-        id: {
-            type: Sequelize.UUID,
-            primaryKey: true,
-            defaultValue: Sequelize.UUIDV1
-        },
-        name: {
-            type: Sequelize.STRING
-        },
-        duration: {
-            type: Sequelize.INTEGER
-        },
-        calories_per_minute: {
-            type: Sequelize.INTEGER
-        }
-    }, {
-        timestamps: false,
-        freezeTableName: true,
-        underscored: true
     });
 
     const MuscleMassProgress = sequelize.define('muscle_mass_progress', {
@@ -209,7 +206,6 @@ module.exports = () => {
      **/
     User.hasOne(UserInfo, {foreignKey: 'user_id'}, {as: 'Info'}) // should be able to use user.getInfo()
 
-
     User.hasMany(MuscleMassProgress, {foreignKey: 'user_id', sourceKey: 'id', as: 'MMPs'}) // user.getMMPs()
     MuscleMassProgress.belongsTo(User, {foreignKey: 'user_id', targetKey: 'id'})
 
@@ -228,17 +224,9 @@ module.exports = () => {
     User.hasMany(Workout, {foreignKey: 'user_id', sourceKey: 'id', as: 'SeqWorkouts'}) // user.getSeqWorkouts()
     Workout.belongsTo(User, {foreignKey: 'user_id', targetKey: 'id'})
 
-    // /** belongsToMany: http://docs.sequelizejs.com/manual/tutorial/associations.html#belongs-to-many-associations
-    //  Creates model SessionWorkout with foreign keys sessionId and workoutId
-    //  Adds methods getSessions, setSessions, addSession, addSessions to Workout,
-    //  and getWorkouts, setWorkouts, addWorkout, and addWorkouts to Session.
-    //  Same for user and workout.
-    //  **/
-    // Session.belongsToMany(Workout, {through: SessionWorkout})
-    // Workout.belongsToMany(Session, {through: SessionWorkout})
-    // // //
-    // // User.belongsToMany(Workout, {through: PersonalWorkout})
-    // // Workout.belongsToMany(User, {through: PersonalWorkout})
+
+    // Vad är detta? Nån får gärna kommentera som vet lol puss
+    sequelize.sync()
 
     return {
         User, UserInfo, Session, Workout, Exercise, GroupTraining, MuscleMassProgress, WeightProgress, sequelize
