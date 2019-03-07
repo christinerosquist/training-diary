@@ -110,7 +110,7 @@ session_id varchar(36),
 workout_id varchar(36)
 );
 
-insert into session_workout values ("good","1","2");
+insert into session_workout values ("good","1","1");
 
 SELECT * FROM user;
 SELECT * FROM user_info;

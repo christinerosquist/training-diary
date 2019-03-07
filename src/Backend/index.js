@@ -14,13 +14,26 @@ io.on('connection', socket => {
 });
 
 const model = require('./model.js');
-model.getWorkouts()
-model.getSessions()
-model.createSession(1, 60, 5, 1).then(created => {
-    model.addSession(created).then(added => {
-        model.getSessions()
-    })
-})
+let gtID = "1"
+let userID = "1"
+
+model.makeWorkout(userID, gtID, "12 mars 2019")
+
+// model.getGroupTrainings().then((gts) => {
+//     console.log(gts)
+// })
+// model.getAllWorkouts().then(wos => {
+//     console.log(wos)
+// })
+// model.getUser(userID).then(user => {
+//     model.createWorkout(user, model.getGroupTraining(gtID), "12 mars 2019").then(wo => {
+//         model.setWorkoutUser(wo, user).then(() => {
+//             console.log("workout")
+//             console.log(wo)
+//         })
+//     })
+// })
+
 
 
 listen(port, () => {

@@ -31,8 +31,9 @@
                 type: Sequelize.TEXT('long'),
             },
             salt: {
-                type: Sequelize.STRING,
-            }, {
+                type: Sequelize.STRING
+            }
+        }, {
             timestamps: false,
             underscored: true,
             freezeTableName: true,
@@ -53,7 +54,6 @@
                     return this.hash === hash;
                 }
             }
-        }
         });
 
 
@@ -90,9 +90,6 @@
             primaryKey: true,
             defaultValue: Sequelize.UUIDV1
         },
-        group_training_id: {
-            type: Sequelize.INTEGER
-        },
         type: {
             type: Sequelize.STRING
         },
@@ -106,6 +103,27 @@
         timestamps: false,
         underscored: true,
         freezeTableName: true
+    });
+
+    const GroupTraining = sequelize.define('group_training', {
+        id: {
+            type: Sequelize.UUID,
+            primaryKey: true,
+            defaultValue: Sequelize.UUIDV1
+        },
+        name: {
+            type: Sequelize.STRING
+        },
+        duration: {
+            type: Sequelize.INTEGER
+        },
+        calories_per_minute: {
+            type: Sequelize.INTEGER
+        }
+    }, {
+        timestamps: false,
+        freezeTableName: true,
+        underscored: true
     });
 
     const Session = sequelize.define('session', {
@@ -162,27 +180,6 @@
         freezeTableName: true
     });
 
-    const GroupTraining = sequelize.define('group_training', {
-        id: {
-            type: Sequelize.UUID,
-            primaryKey: true,
-            defaultValue: Sequelize.UUIDV1
-        },
-        name: {
-            type: Sequelize.STRING
-        },
-        duration: {
-            type: Sequelize.INTEGER
-        },
-        calories_per_minute: {
-            type: Sequelize.INTEGER
-        }
-    }, {
-        timestamps: false,
-        freezeTableName: true,
-        underscored: true
-    });
-
     const MuscleMassProgress = sequelize.define('muscle_mass_progress', {
         id: {
             type: Sequelize.UUID,
@@ -220,9 +217,9 @@
      User.hasOne(UserInfo) or User.belongsTo(UserInfo) --> User = source, userInfo = target
      BelongsTo will add the foreignKey on the source where hasOne will add on the target
      **/
-    User.hasOne(UserInfo, {foreignKey: 'user_id'}, {as: 'Info'}) // should be able to use user.getInfo()
-    User.hasOne(MuscleMassProgress, {foreignKey: 'user_id'}, {as: 'MMP'}) // user.getMMP()
-    User.hasOne(WeightProgress, {foreignKey: 'user_id'}, {as: 'WP'}) // user.getWP()
+    //User.hasOne(UserInfo, {foreignKey: 'user_id'}, {as: 'Info'}) // should be able to use user.getInfo()
+    // User.hasOne(MuscleMassProgress, {foreignKey: 'user_id'}, {as: 'MMP'}) // user.getMMP()
+    // User.hasOne(WeightProgress, {foreignKey: 'user_id'}, {as: 'WP'}) // user.getWP()
 
     Exercise.hasMany(Session, {foreignKey: 'exercise_id', sourceKey: 'id'}) // enables exercise.getSessions()
     Session.belongsTo(Exercise, {foreignKey: 'exercise_id', targetKey: 'id'}) // enables session.getExercise()
@@ -241,9 +238,11 @@
      **/
     Session.belongsToMany(Workout, {through: SessionWorkout})
     Workout.belongsToMany(Session, {through: SessionWorkout})
-    // //
+    //
     // User.belongsToMany(Workout, {through: PersonalWorkout})
     // Workout.belongsToMany(User, {through: PersonalWorkout})
+
+    sequelize.sync()
 
     return {
         User, UserInfo, Session, Workout, Exercise, GroupTraining, MuscleMassProgress, WeightProgress, sequelize
