@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('rosquis', 'rosquisadmin', 'upa6fooBie', {
-    //host: 'mysql-vt2019.csc.kth.se',
-    host: '2001:6b0:1:1300:250:56ff:fe01:25a',
+    host: 'mysql-vt2019.csc.kth.se',
+    //host: '2001:6b0:1:1300:250:56ff:fe01:25a',
     dialect: 'mysql',
     operatorsAliases: false,
     logging: false,
@@ -209,23 +209,26 @@ module.exports = () => {
     Exercise.hasMany(Session, {foreignKey: 'exercise_id', sourceKey: 'id'}) // enables exercise.getSessions()
     Session.belongsTo(Exercise, {foreignKey: 'exercise_id', targetKey: 'id'}) // enables session.getExercise()
 
+    Workout.hasMany(Session, {foreignKey: 'workout_id', sourceKey: 'id'}) // enables exercise.getSessions()
+    Session.belongsTo(Workout, {foreignKey: 'workout_id', targetKey: 'id'}) // enables session.getExercise()
+
     GroupTraining.hasMany(Workout, {foreignKey: 'group_training_id', sourceKey: 'id'}) // groupTraining.getWorkouts()
     Workout.belongsTo(GroupTraining, {foreignKey: 'group_training_id', targetKey: 'id'}) // not sure if workout.getGroupTraining() works
 
     User.hasMany(Workout, {foreignKey: 'user_id', sourceKey: 'id'}) // user.getWorkouts()
     Workout.belongsTo(User, {foreignKey: 'user_id', targetKey: 'id'})
 
-    /** belongsToMany: http://docs.sequelizejs.com/manual/tutorial/associations.html#belongs-to-many-associations
-     Creates model SessionWorkout with foreign keys sessionId and workoutId
-     Adds methods getSessions, setSessions, addSession, addSessions to Workout,
-     and getWorkouts, setWorkouts, addWorkout, and addWorkouts to Session.
-     Same for user and workout.
-     **/
-    Session.belongsToMany(Workout, {through: SessionWorkout})
-    Workout.belongsToMany(Session, {through: SessionWorkout})
-    // //
-    // User.belongsToMany(Workout, {through: PersonalWorkout})
-    // Workout.belongsToMany(User, {through: PersonalWorkout})
+    // /** belongsToMany: http://docs.sequelizejs.com/manual/tutorial/associations.html#belongs-to-many-associations
+    //  Creates model SessionWorkout with foreign keys sessionId and workoutId
+    //  Adds methods getSessions, setSessions, addSession, addSessions to Workout,
+    //  and getWorkouts, setWorkouts, addWorkout, and addWorkouts to Session.
+    //  Same for user and workout.
+    //  **/
+    // Session.belongsToMany(Workout, {through: SessionWorkout})
+    // Workout.belongsToMany(Session, {through: SessionWorkout})
+    // // //
+    // // User.belongsToMany(Workout, {through: PersonalWorkout})
+    // // Workout.belongsToMany(User, {through: PersonalWorkout})
 
     return {
         User, UserInfo, Session, Workout, Exercise, GroupTraining, MuscleMassProgress, WeightProgress, sequelize
