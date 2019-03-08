@@ -75,6 +75,9 @@ module.exports = () => {
         type: {
             type: Sequelize.STRING
         },
+        group_training_id : {
+          type: Sequelize.UUID
+        },
         date: {
             type: Sequelize.DATE
         },

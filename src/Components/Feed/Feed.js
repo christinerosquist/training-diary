@@ -15,8 +15,8 @@ class Feed extends Component {
         fetch('/api/feed')
             .then(res => res.json())
             .then(data => {
-                console.log(data.entries)
-                this.setState({entries: data.entries})
+                console.log(data.feedInfo)
+                this.setState({entries: data.feedInfo})
             })
             .catch(error => console.log(error))
     }
@@ -26,7 +26,7 @@ class Feed extends Component {
         return (
             <div className="feed">
                 <h3 id="feedtitle">Latest workouts</h3>
-                {mockData.map((activity) => <FeedItem activity={activity} key={activity.user_id}/>)}
+                {this.state.entries.map((feedInfo) => <FeedItem feedInfo={feedInfo} key={feedInfo.workout.id}/>)}
             </div>
         );
     }

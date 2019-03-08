@@ -46,13 +46,12 @@ router.get('/getprogress/:id', async function (req, res) {
 });
 
 router.get('/feed', async function (req, res) {
-    const entries = await model.getFeedWorkouts()
-    const exEntries = await model.createWorkoutObject(entries)
-
-    console.log(exEntries)
+    const workouts = await model.getFeedWorkouts();
+    const feedInfo = await model.getFeedInfo(workouts);
+    console.log(feedInfo);
 
     res.json({
-        entries: exEntries
+        feedInfo: feedInfo, //Returns array containing information to be posted in feed
     });
 });
 
@@ -81,7 +80,7 @@ router.get('/testconnection', async function (req, res) {
 });
 
 router.get('/validateuser/:email/:password', async function (req, res){
-    var users = await model.getUsers(); //Gets all the users from the db
+    var users = await model.getAllUsers(); //Gets all the users from the db
     var validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
     if(validUser != null){
         res.json({
