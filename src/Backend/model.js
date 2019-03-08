@@ -23,11 +23,17 @@ exports.createUserInfo = (user, name, sex, height, weight) => {
 
 }
 
-// Get all workouts from user
-exports.getWorkouts = (userId) => {
-    return User.findByPk(userId) // user1
+exports.getUserInfo = (id) => {
+    return UserInfo.findByPk(id)
+        .then(data => {return data})
+        .error(e => console.log(e))
+}
+
+// Get all workouts from user with userId
+exports.getWorkouts = (user_id) => {
+    return User.findByPk(user_id) // user1
         .then(user => {
-            return user.getWorkouts()
+            return user.getSeqWorkouts()
                 .then(workouts => {
                     return workouts
                 })
@@ -91,6 +97,77 @@ exports.getSessions = (workout_id) => {
         .catch(error => {console.log(error)})
 }
 
+function getExercise(exerciseId) {
+    return Exercise.findByPk(exerciseId)
+        .then(exercise =>{
+            return exercise
+        })
+        .catch(error => console.log(error));
+}
+
+exports.getExercises = async (sessions) => {
+    var i;
+    var exercises = [];
+    for(i = 0; i < sessions.length; i++){
+        var session = sessions[i];
+        var exerciseId = session.dataValues.exercise_id;
+        var exercise = await getExercise(exerciseId);
+        exercises.push(exercise);
+    }
+    return exercises;
+}
+
+// Get the 5 latest workouts that has been added
+exports.getFeedWorkouts = () => {
+    return Workout.findAll({limit: 5, order: [['date', 'DESC']]})
+        .then(workouts => {return workouts})
+        .catch(error => console.log(error))
+}
+
+// Get the muscle progress entries of a user with user_id
+exports.getMuscleProgress = (user_id) => {
+    return User.findByPk(user_id)
+        .then(user => {
+            return user.getMMPs()
+                .then(progress => {
+                    return progress
+                })
+        })
+        .catch(e => console.log(e))
+}
+
+// Get the weight progress of a user with user_id
+exports.getWeightProgress = (user_id) => {
+    return User.findByPk(user_id)
+        .then(user => {
+            return user.getWPs()
+                .then(progress => {
+                    return progress
+                })
+        })
+        .catch(e => console.log(e))
+}
+
+exports.getGroupTraining = (id) => {
+    return GroupTraining.findByPk(id)
+        .then(group_training => {
+            return group_training
+        })
+        .catch(error => console.log(error))
+}
+
+exports.createSession = (exercise, workout, wei, set, rep) => {
+    return Session.create({
+        weight: wei,
+        sets: set,
+        reps: rep
+    }).then(newSession => {
+        newSession.setExercise(exercise)
+        workout.addSession(newSession)
+        return newSession
+    })
+}
+
 // Working
 exports.makeWorkout = async (userID, groupTrainID, date) => {
     let type = "Session"
@@ -106,18 +183,6 @@ exports.makeWorkout = async (userID, groupTrainID, date) => {
     await gt.addWorkout(workout)
     console.log(gt)
     console.log(workout)
-}
-
-exports.createSession = (exercise, workout, wei, set, rep) => {
-    return Session.create({
-        weight: wei,
-        sets: set,
-        reps: rep
-    }).then(newSession => {
-        newSession.setExercise(exercise)
-        workout.addSession(newSession)
-        return newSession
-    })
 }
 
 exports.createExercise = (name, caloriesUpon, calories) => {
@@ -159,6 +224,7 @@ exports.validateUser = (users, email, password) => {
     }
     else return userToReturn;
 }
+
 
 function validatePassword (user, password) {
     var hash = crypto.pbkdf2Sync(password, user.dataValues.salt, 1000, 64, `sha512`).toString(`hex`);

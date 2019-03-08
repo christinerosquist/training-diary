@@ -13,26 +13,6 @@ io.on('connection', socket => {
     socketController(socket, io);
 });
 
-const model = require('./model.js');
-
-//model.makeWorkout(userID, gtID, "12 mars 2019")
-
-// model.getGroupTrainings().then((gts) => {
-//     console.log(gts)
-// })
-// model.getAllWorkouts().then(wos => {
-//     console.log(wos)
-// })
-// model.getUser(userID).then(user => {
-//     model.createWorkout(user, model.getGroupTraining(gtID), "12 mars 2019").then(wo => {
-//         model.setWorkoutUser(wo, user).then(() => {
-//             console.log("workout")
-//             console.log(wo)
-//         })
-//     })
-// })
-
-
 
 listen(port, () => {
     console.log("server listening on port", port);

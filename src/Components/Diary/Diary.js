@@ -23,16 +23,22 @@ class Diary extends Component {
     }
 
     handleClick(workout_id, workout_type, group_training_id) {
-
+        console.log(workout_type)
         if(this.state[workout_id] === undefined) {
             console.log("I don't have any saved data, so lets get some!")
 
-            if (workout_type === 'Session') {
+            if (workout_type === 'Gym Session') {
 
                 fetch('/api/getsessions/' + workout_id)
                     .then(res => res.json())
                     .then(data => {
-                        this.setState({[workout_id]: data.sessions})
+                        console.log(data.sessions);
+                        var mapping = [];
+                        for(var i = 0; i<data.sessions.length; i++){
+                            var arrayObject = {session: data.sessions[i], exercise: data.exercises[i]}
+                            mapping.push(arrayObject);
+                        }
+                        this.setState({[workout_id]: {mapping:mapping}})
                     })
                     .catch(error => console.log(error))
 
@@ -48,7 +54,18 @@ class Diary extends Component {
         }
     }
 
+    handleCalories(session, exercise){
+        if(exercise.define_calories_upon == "reps"){
+            return exercise.calories * session.reps;
+        }
+        else{ //Else är bara duration?
+            return exercise.calories * session.reps;
+        }
+    }
+
     render() {
+
+
 
         return (
             <div className="container" id="diaryContainer">
@@ -71,9 +88,29 @@ class Diary extends Component {
                             <div id={'collapse' + workout.id} className="collapse"
                                  aria-labelledby={'heading' + workout.id} data-parent="#accordion">
                                 <div className="card-body">
-                                    {workout.type === 'Session' && this.state[workout.id] !== undefined &&
-                                        JSON.stringify(this.state[workout.id])
+                                    {workout.type === 'Gym Session' && this.state[workout.id] !== undefined &&
+
+                                    <div>
+                                        <b>Date:</b> {workout.date}, <b>Likes:</b> {workout.likes}
+                                        <br /><br />
+
+                                        {this.state[workout.id].mapping.map((mapping) => <div>
+                                            <b>Exercise:</b> {mapping.exercise.name}
+                                            <br />
+                                            <b>Weight:</b> {mapping.session.weight + ' kg'}
+                                            <br />
+                                            <b>Sets:</b> {mapping.session.sets}
+                                            <br />
+                                            <b>Reps:</b> {mapping.session.reps}
+                                            <br />
+                                            <b>Duration:</b> {mapping.session.duration + ' minutes'}
+                                            <br />
+                                            <b>Calories burned:</b> {this.handleCalories(mapping.session, mapping.exercise) + ' calories'}
+                                            <br /><br/>
+                                        </div>)}
+                                    </div>
                                     }
+
 
                                     {workout.type === 'Group Training' && this.state[workout.id] !== undefined &&
                                     <div>
@@ -84,7 +121,7 @@ class Diary extends Component {
                                         <br />
                                         <b>Duration:</b> {this.state[workout.id].duration} minutes
                                         <br />
-                                        <b>Total calories burned</b> {this.state[workout.id].calories_per_minute * this.state[workout.id].duration} calories
+                                        <b>Total calories burned:</b> {this.state[workout.id].calories_per_minute * this.state[workout.id].duration} calories
 
                                     </div>}
                                 </div>

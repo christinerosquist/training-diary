@@ -2,42 +2,56 @@ import React, {Component} from 'react';
 import {Line} from "react-chartjs-2";
 
 class Progress extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            ready: false,
+            muscledata: null,
+            weightdata: null
+        }
+    }
+
 
     componentDidMount() {
-        wlabels = []
-        mlabels = []
-        wdatasets[0].data = []
-        mdatasets[0].data = []
 
-        mockWeightProgress.forEach((weight) => {
-            wlabels.push(weight.date)
-            wdatasets[0].data.push(weight.weight)
-        })
+        if(this.state.ready === false) { // lägg till så att den uppdateras även ifall man går in på annan användare
+            mlabels.length = 0
+            mdatasets[0].data.length = 0
+            wlabels.length = 0
+            wdatasets[0].data.length = 0
+            fetch('/api/getprogress/' + this.props.user_id)
+                .then(res => res.json())
+                .then(data => {
+                    data.muscledata.map(muscledata => {
+                        mlabels.push(muscledata.date)
+                        mdatasets[0].data.push(muscledata.percentage)
+                    })
 
-        mockMuscleProgress.forEach((muscle) => {
-            mlabels.push(muscle.date)
-            mdatasets[0].data.push(muscle.percent)
-        })
+                    data.weightdata.map(weightdata => {
+                        wlabels.push(weightdata.date)
+                        wdatasets[0].data.push(weightdata.kg)
+                    })
+
+                    this.setState({
+                        ready: true,
+                        muscledata: {labels: mlabels, datasets: mdatasets},
+                        weightdata: {labels: wlabels, datasets: wdatasets}
+                    })
+                })
+                .catch(error => console.log(error))
+        }
     }
 
     render() {
-        const muscleData = {
-            labels: mlabels,
-            datasets: mdatasets
-        }
-
-        const weightData = {
-            labels: wlabels,
-            datasets: wdatasets
-        }
 
         return (
             <div className="row no-gutters">
                 <div className="col-sm-6 col-xs-6">
-                    <Line data={weightData} />
+                    {this.state.ready && <Line data={this.state.weightdata} />}
                 </div>
                 <div className="col-sm-6 col-xs-6">
-                    <Line data={muscleData} />
+                    {this.state.ready && <Line data={this.state.muscledata} />}
                 </div>
             </div>
         );
@@ -59,36 +73,6 @@ var mdatasets = [{
     fill: false,
     borderColor: 'blue'
 }];
-
-const mockWeightProgress = [
-    {
-        date: '2018-01-20',
-        weight: 60
-    },
-    {
-        date: '2018-01-25',
-        weight: 59
-    },
-    {
-        date: '2018-03-30',
-        weight: 55
-    },
-]
-
-const mockMuscleProgress = [
-    {
-        date: '2018-01-20',
-        percent: 10
-    },
-    {
-        date: '2018-01-25',
-        percent: 13
-    },
-    {
-        date: '2018-03-30',
-        percent: 15
-    },
-]
 
 
 export default Progress;

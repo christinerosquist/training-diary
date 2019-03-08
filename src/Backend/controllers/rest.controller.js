@@ -12,11 +12,16 @@ router.get('/profile/:id', async function (req, res) {
 });
 
 router.get('/getsessions/:id', async function (req, res) {
+    console.log("got here haha")
     const workout_id = req.params.id
-    const sessions = await model.getSessions(workout_id)
+    const sessions = await model.getSessions(workout_id);
+    const exercises = await model.getExercises(sessions);
+    console.log(exercises);
+    console.log(sessions);
 
     res.json({
-        sessions: sessions
+        sessions: sessions,
+        exercises: exercises
     })
 });
 
@@ -38,11 +43,25 @@ router.get('/getgrouptrainings', async function (req, res) {
     })
 });
 
-router.get('/feed', async function (req, res) {
-    const entries = await model.getAllWorkouts()
+router.get('/getprogress/:id', async function (req, res) {
+    const user_id = req.params.id
+    const muscledata = await model.getMuscleProgress(user_id)
+    const weightdata = await model.getWeightProgress(user_id)
 
     res.json({
-        entries: entries
+        muscledata: muscledata,
+        weightdata: weightdata
+    })
+});
+
+router.get('/feed', async function (req, res) {
+    const entries = await model.getFeedWorkouts()
+    const exEntries = await model.createWorkoutObject(entries)
+
+    console.log(exEntries)
+
+    res.json({
+        entries: exEntries
     });
 });
 
