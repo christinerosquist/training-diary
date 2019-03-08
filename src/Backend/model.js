@@ -108,8 +108,6 @@ exports.makeWorkout = async (userID, groupTrainID, date) => {
     console.log(workout)
 }
 
-
-
 exports.createSession = (exercise, workout, wei, set, rep) => {
     return Session.create({
         weight: wei,
