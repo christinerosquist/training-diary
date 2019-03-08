@@ -29,6 +29,15 @@ exports.getUserInfo = (id) => {
         .error(e => console.log(e))
 }
 
+exports.getUserInfoByUserId = (userId) => {
+    return UserInfo.findAll({
+        where:{
+            user_id : userId
+        }
+    }).then(data => {return data})
+        .error(e => console.log(e))
+}
+
 // Get all workouts from user with userId
 exports.getWorkouts = (user_id) => {
     return User.findByPk(user_id) // user1
@@ -124,6 +133,28 @@ exports.getFeedWorkouts = () => {
         .catch(error => console.log(error))
 }
 
+exports.getFeedInfo = async (workouts) => {
+    var i;
+    var feedInfo = [];
+    for(i = 0; i < workouts.length; i++){
+        var workout = workouts[i];
+        var userId = workout.dataValues.user_id;
+        var user = await this.getUser(userId);
+        var userInfo = await this.getUserInfoByUserId(userId);
+
+        var workoutType;
+        if(workout.dataValues.type == "Gym Session"){ //Get the session
+             workoutType = await this.getSessions(workout.dataValues.id);
+        }
+        else{ //If workout is a group training
+            workoutType = await this.getGroupTraining(workout.dataValues.group_training_id);
+        }
+        var infoObject = {user: user, userInfo: userInfo, workout: workout, workoutType: workoutType}
+        feedInfo.push(infoObject);
+    }
+    return feedInfo;
+}
+
 // Get the muscle progress entries of a user with user_id
 exports.getMuscleProgress = (user_id) => {
     return User.findByPk(user_id)
@@ -184,6 +215,23 @@ exports.createSession = (exercise, workout, wei, set, rep) => {
         workout.addSession(newSession)
         return newSession
     })
+}
+
+// Working
+exports.makeWorkout = async (userID, groupTrainID, date) => {
+    let type = "Session"
+    if(groupTrainID !== null) {
+        type = "Group Training"
+    }
+
+    const user = await User.findByPk(userID)
+    const gt = await GroupTraining.findByPk(groupTrainID)
+    const workout = await Workout.create({type: type, date: date, likes: 0})
+
+    await workout.setUser(user)
+    await gt.addWorkout(workout)
+    console.log(gt)
+    console.log(workout)
 }
 
 exports.createExercise = (name, caloriesUpon, calories) => {

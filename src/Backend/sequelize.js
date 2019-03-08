@@ -1,13 +1,13 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('rosquis', 'rosquisadmin', 'upa6fooBie', {
-    host: 'mysql-vt2019.csc.kth.se',
-    //host: '2001:6b0:1:1300:250:56ff:fe01:25a',
+    //host: 'mysql-vt2019.csc.kth.se',
+    host: '2001:6b0:1:1300:250:56ff:fe01:25a',
     dialect: 'mysql',
     operatorsAliases: false,
     logging: false,
 
     pool: {
-        max: 500,
+        max: 100,
         min: 0,
         acquire: 30000,
         idle: 10000
@@ -74,6 +74,9 @@ module.exports = () => {
         },
         type: {
             type: Sequelize.STRING
+        },
+        group_training_id : {
+          type: Sequelize.UUID
         },
         date: {
             type: Sequelize.DATE

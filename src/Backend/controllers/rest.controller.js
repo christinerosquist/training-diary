@@ -34,6 +34,15 @@ router.get('/getgrouptraining/:id', async function (req, res) {
     })
 });
 
+router.get('/getgrouptrainings', async function (req, res) {
+    console.log("ggt")
+    const group_trainings = await model.getAllGroupTrainings()
+
+    res.json({
+        group_trainings: group_trainings
+    })
+});
+
 router.get('/getprogress/:id', async function (req, res) {
     const user_id = req.params.id
     const muscledata = await model.getMuscleProgress(user_id)
@@ -46,11 +55,12 @@ router.get('/getprogress/:id', async function (req, res) {
 });
 
 router.get('/feed', async function (req, res) {
-    const entries = await model.getFeedWorkouts()
-
+    const workouts = await model.getFeedWorkouts();
+    const feedInfo = await model.getFeedInfo(workouts);
+    console.log(feedInfo);
 
     res.json({
-        entries: entries
+        feedInfo: feedInfo, //Returns array containing information to be posted in feed
     });
 });
 
@@ -81,7 +91,7 @@ router.get('/testconnection', async function (req, res) {
 });
 
 router.get('/validateuser/:email/:password', async function (req, res){
-    var users = await model.getUsers(); //Gets all the users from the db
+    var users = await model.getAllUsers(); //Gets all the users from the db
     var validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
     if(validUser != null){
         res.json({
