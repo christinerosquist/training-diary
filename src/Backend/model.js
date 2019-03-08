@@ -199,6 +199,23 @@ exports.createSession = (exercise, workout, wei, set, rep) => {
     })
 }
 
+// Working
+exports.makeWorkout = async (userID, groupTrainID, date) => {
+    let type = "Session"
+    if(groupTrainID !== null) {
+        type = "Group Training"
+    }
+
+    const user = await User.findByPk(userID)
+    const gt = await GroupTraining.findByPk(groupTrainID)
+    const workout = await Workout.create({type: type, date: date, likes: 0})
+
+    await workout.setUser(user)
+    await gt.addWorkout(workout)
+    console.log(gt)
+    console.log(workout)
+}
+
 exports.createExercise = (name, caloriesUpon, calories) => {
     return Exercise.create({
         name: name,

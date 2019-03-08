@@ -34,6 +34,15 @@ router.get('/getgrouptraining/:id', async function (req, res) {
     })
 });
 
+router.get('/getgrouptrainings', async function (req, res) {
+    console.log("ggt")
+    const group_trainings = await model.getAllGroupTrainings()
+
+    res.json({
+        group_trainings: group_trainings
+    })
+});
+
 router.get('/getprogress/:id', async function (req, res) {
     const user_id = req.params.id
     const muscledata = await model.getMuscleProgress(user_id)
