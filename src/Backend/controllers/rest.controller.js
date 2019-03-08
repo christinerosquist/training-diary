@@ -29,6 +29,15 @@ router.get('/getgrouptraining/:id', async function (req, res) {
     })
 });
 
+router.get('/getgrouptrainings', async function (req, res) {
+    console.log("ggt")
+    const group_trainings = await model.getAllGroupTrainings()
+
+    res.json({
+        group_trainings: group_trainings
+    })
+});
+
 router.get('/feed', async function (req, res) {
     const entries = await model.getAllWorkouts()
 
@@ -61,7 +70,20 @@ router.get('/testconnection', async function (req, res) {
     })
 });
 
-router.get('/validateuser/:email/:password', async function (req, res){
+router.get('/addworkout/:userid/:gtid', async function (req, res) {
+    let today = new Date()
+    console.log(req.params)
+    const workout = await model.makeWorkout(req.params.userid, req.params.gtid, today)
+    const workouts = await model.getAllWorkouts()
+
+    console.log(workouts)
+
+    res.json({
+        express: "Done"
+    })
+});
+
+router.get('/validateuser/:email/:password', async function (req, res) {
     var users = await model.getUsers(); //Gets all the users from the db
     var validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
     if(validUser != null){

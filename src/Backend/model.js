@@ -104,6 +104,8 @@ exports.makeWorkout = async (userID, groupTrainID, date) => {
 
     await workout.setUser(user)
     await gt.addWorkout(workout)
+    console.log(gt)
+    console.log(workout)
 }
 
 
