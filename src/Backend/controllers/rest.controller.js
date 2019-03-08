@@ -47,12 +47,10 @@ router.get('/getprogress/:id', async function (req, res) {
 
 router.get('/feed', async function (req, res) {
     const entries = await model.getFeedWorkouts()
-    const exEntries = await model.createWorkoutObject(entries)
 
-    console.log(exEntries)
 
     res.json({
-        entries: exEntries
+        entries: entries
     });
 });
 
@@ -62,8 +60,10 @@ router.post('/addworkout', async function (req, res) {
 });
 
 router.post('/addprogress', async function (req, res) {
-    res.json({
-    });
+    const user_id = 1; // TEMPORARY VALUE
+    const newprogress = await model.addProgress(user_id, req.body.mode, req.body.date, req.body.data)
+
+    return res.json({data: newprogress});
 });
 
 router.get('/testconnection', async function (req, res) {

@@ -156,6 +156,24 @@ exports.getGroupTraining = (id) => {
         .catch(error => console.log(error))
 }
 
+exports.addProgress = (user_id, mode, date, data) => {
+    if(mode === 'weight') {
+        return WeightProgress.create({
+            user_id: user_id,
+            date: date,
+            kg: data
+        }).then(newprogress => {
+            return newprogress
+        })
+    } else {
+        return MuscleMassProgress.create({
+            user_id: user_id,
+            date: date,
+            percentage: data
+        }).then(newprogress => {return newprogress})
+    }
+}
+
 exports.createSession = (exercise, workout, wei, set, rep) => {
     return Session.create({
         weight: wei,

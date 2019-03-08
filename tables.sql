@@ -4,12 +4,14 @@ drop table user; # Om det finns en tidigare databas
 drop table user_info;
 drop table weight_progress;
 drop table muscle_mass_progress;
+drop table muscle_mass_progresses;
+drop table weight_progresses;
+
 
 drop table workout;
 drop table session;
 drop table exercise;
 drop table group_training;
-drop table session_workout;
 
 create table user (
 id varchar(36) NOT NULL,
