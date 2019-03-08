@@ -23,12 +23,12 @@ class Progress extends Component {
             fetch('/api/getprogress/' + this.props.user_id)
                 .then(res => res.json())
                 .then(data => {
-                    data.muscledata.map(muscledata => {
+                    data.muscledata.forEach(muscledata => {
                         mlabels.push(muscledata.date)
                         mdatasets[0].data.push(muscledata.percentage)
                     })
 
-                    data.weightdata.map(weightdata => {
+                    data.weightdata.forEach(weightdata => {
                         wlabels.push(weightdata.date)
                         wdatasets[0].data.push(weightdata.kg)
                     })

@@ -10,16 +10,19 @@ exports.createUser = (email, password) => {
         // hashing user's salt and password with 1000 iterations, 64 length and sha512 digest
         hash: crypto.pbkdf2Sync(password, salt,1000, 64, `sha512`).toString(`hex`), //Hashar
         email: email
-    }).then(data => {return data})
+    }).then(data => {
+        return data
+    }).catch(e => console.log(e))
 }
-exports.createUserInfo = (user, name, sex, height, weight) => {
+exports.createUserInfo = (user_id, name, sex, height) => {
     return UserInfo.create({
-        user_id: user.dataValues.id,
+        user_id: user_id,
         name: name,
         sex: sex,
         height: parseInt(height),
-        current_weight: parseInt(weight)
-    }).then(data => {return data})
+    }).then(data => {
+        return data
+    }).catch(e => console.log(e))
 
 }
 
@@ -188,6 +191,8 @@ exports.getGroupTraining = (id) => {
 }
 
 exports.addProgress = (user_id, mode, date, data) => {
+    console.log("Model is creating progress!")
+    console.log(user_id, mode, date, data)
     if(mode === 'weight') {
         return WeightProgress.create({
             user_id: user_id,
@@ -195,13 +200,15 @@ exports.addProgress = (user_id, mode, date, data) => {
             kg: data
         }).then(newprogress => {
             return newprogress
-        })
+        }).catch(e => console.log(e))
     } else {
         return MuscleMassProgress.create({
             user_id: user_id,
             date: date,
             percentage: data
-        }).then(newprogress => {return newprogress})
+        }).then(newprogress => {
+            return newprogress
+        }).catch(e => console.log(e))
     }
 }
 

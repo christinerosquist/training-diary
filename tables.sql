@@ -27,11 +27,10 @@ id varchar(36) NOT NULL,
 user_id varchar(36),
 name varchar(64),
 sex varchar(64),
-height int,
-current_weight int
+height int
 );
 
-insert into user_info values ("1","1",'Christine','female',157, 52);
+insert into user_info values ("1","1",'Christine','female',157);
 
 create table weight_progress (
 id varchar(36) NOT NULL,

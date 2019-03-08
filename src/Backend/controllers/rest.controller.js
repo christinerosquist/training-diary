@@ -78,8 +78,8 @@ router.post('/addprogress', async function (req, res) {
 
 router.get('/testconnection', async function (req, res) {
     console.log("Got here");
-    var users = await model.getUsers();
-    var validUser = await model.validateUser(users);
+    const users = await model.getUsers();
+    const validUser = await model.validateUser(users);
     if(validUser){ //Gör detta snyggare sen nu bara för test
         res.json({
             express : "Valid"
@@ -91,8 +91,8 @@ router.get('/testconnection', async function (req, res) {
 });
 
 router.get('/validateuser/:email/:password', async function (req, res){
-    var users = await model.getAllUsers(); //Gets all the users from the db
-    var validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
+    const users = await model.getAllUsers(); //Gets all the users from the db
+    const validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
     if(validUser != null){
         res.json({
             user : validUser
@@ -103,12 +103,16 @@ router.get('/validateuser/:email/:password', async function (req, res){
     })
 });
 
-router.get('/createuser/:email/:password/:name/:sex/:height/:weight', async function (req, res){
-    var user = await model.createUser(req.params.email, req.params.password)
-    var userInfo = await model.createUserInfo(user, req.params.name, req.params.sex, req.params.height, req.params.weight)
-    res.json({
-        express : "Done"
-    })
+router.post('/createuser', async function (req, res){
+    const weight = parseInt(req.body.weight)
+    const muscle = parseInt(req.body.muscle)
+
+    const user = await model.createUser(req.body.email, req.body.password)
+    const userinfo = await model.createUserInfo(user.id, req.body.name, req.body.sex, req.body.height)
+    const newwprogress = await model.addProgress(user.id, 'weight', req.body.date, weight)
+    const newmprogress = await model.addProgress(user.id, 'muscle', req.body.date, muscle)
+
+    res.json({express : "Done"})
 });
 
 module.exports = router; // export the router with the functions for the urls.

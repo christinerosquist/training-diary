@@ -6,9 +6,6 @@ import Progress from "../../Components/Progress/Progress";
 import Diary from "../../Components/Diary/Diary";
 
 class ProfilePage extends Component {
-    constructor() {
-        super()
-    }
     render() {
         return (
             <div>

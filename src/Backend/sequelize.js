@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('rosquis', 'rosquisadmin', 'upa6fooBie', {
-    //host: 'mysql-vt2019.csc.kth.se',
-    host: '2001:6b0:1:1300:250:56ff:fe01:25a',
+    host: 'mysql-vt2019.csc.kth.se',
+    //host: '2001:6b0:1:1300:250:56ff:fe01:25a',
     dialect: 'mysql',
     operatorsAliases: false,
     logging: false,
@@ -57,9 +57,6 @@ module.exports = () => {
         height: {
             type: Sequelize.INTEGER
         },
-        current_weight: {
-            type: Sequelize.INTEGER
-        }
     }, {
         timestamps: false,
         underscored: true,
