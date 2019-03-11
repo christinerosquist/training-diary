@@ -28,7 +28,7 @@ class ProfileHeader extends Component {
         return (
             <div className="row no-gutters">
                 <div className="col-sm-6 col-xs-6" id="leftCol">
-                    <img id="profImg" src={mockData.img} alt="Profile"/>
+                    <img id="profImg" src={this.state.userInfo.image} alt="Profile"/>
                 </div>
                 <div className="col-sm-6 col-xs-6" id="rightCol">
                     <h4>{this.state.userInfo.name}</h4>

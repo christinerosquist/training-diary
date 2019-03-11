@@ -12,7 +12,7 @@ class AddWorkoutPage extends Component {
                     <Navbar userId={this.props.userId} />
                 </div>
                 <div className="container appContainer">
-                    <AddWorkout/>
+                    <AddWorkout userId={this.props.userId}/>
                 </div>
             </div>
         );

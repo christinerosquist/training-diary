@@ -23,6 +23,17 @@ class Login extends Component {
 
     }
 
+    componentDidMount() {
+        fetch('/api/getCurrentUser')
+            .then(res => res.json())
+            .then(data => {
+                if(data.user !== 'Not logged in'){ //If logged in, just redirect user to feed
+                    this.setState({redirect:true});
+                }
+            })
+            .catch(error => console.log(error))
+    }
+
     callBackendAPI = async (email, password) => {
         const response = await fetch('/api/validateuser/' + email + "/" + password);
         const body = await response.json()

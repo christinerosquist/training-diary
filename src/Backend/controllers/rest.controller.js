@@ -33,6 +33,12 @@ router.get('/getUserInfo/:id', async function (req, res){
     }
 })
 
+router.post('/logOut', async function (req, res) {
+    req.session.destroy();
+    return res.json({data: "loggedOut"});
+
+});
+
 
 
 router.get('/profile/:id', async function (req, res) {
