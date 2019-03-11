@@ -10,8 +10,8 @@ class AddProgress extends Component {
         this.state = {
             mode: 'weight',
             date: new Date(),
-            inputkg: null,
-            percent: null,
+            inputkg: '',
+            percent: '',
             updated: false
         }
 
@@ -21,13 +21,13 @@ class AddProgress extends Component {
 
     setWeightMode() {
         this.setState({
-            mode: 'weight'
+            mode: 'weight', inputkg: this.state.percent, percent: ''
         })
     }
 
     setMuscleMode() {
         this.setState({
-            mode: 'muscle'
+            mode: 'muscle', percent: this.state.inputkg, inputkg: ''
         })
     }
 
@@ -44,8 +44,21 @@ class AddProgress extends Component {
     }
 
     handleAddProgress = () => {
-        const weight = this.state.inputkg
-        const date = moment(this.state.date).format("YYYY-MM-DD")
+        fetch('/api/addprogress', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                data: this.state.mode === 'weight' ? this.state.inputkg : this.state.percent,
+                date: moment(this.state.date).format("YYYY-MM-DD"),
+                mode: this.state.mode
+            })
+        })
+            .then(res => res.json())
+            .then(data => {console.log(data)})
+            .catch(error => console.log(error))
 
         this.setState({updated: true})
         setTimeout(function(){this.setState({updated: false})}.bind(this), 3000)
@@ -75,7 +88,7 @@ class AddProgress extends Component {
                             />
                         </div>
 
-                        <button onClick={this.handleAddProgress} className={'btn btn-primary ' + (this.state.inputkg === null ? 'disabled' : '')}>Submit</button>
+                        <button onClick={this.handleAddProgress} disabled={!(this.state.inputkg !== '' || this.state.percent !== '')} className={'btn btn-primary ' + (this.state.inputkg !== '' || this.state.percent !== '' ? '' : 'disabled')}>Submit</button>
                         {this.state.updated && <div><br /><p>Your progress was updated!</p></div>}
                     </div>
 

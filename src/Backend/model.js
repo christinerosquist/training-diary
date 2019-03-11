@@ -10,22 +10,36 @@ exports.createUser = (email, password) => {
         // hashing user's salt and password with 1000 iterations, 64 length and sha512 digest
         hash: crypto.pbkdf2Sync(password, salt,1000, 64, `sha512`).toString(`hex`), //Hashar
         email: email
-    }).then(data => {return data})
+    }).then(data => {
+        return data
+    }).catch(e => console.log(e))
 }
-exports.createUserInfo = (user, name, sex, height, weight) => {
+exports.createUserInfo = (user_id, name, sex, height, image, deletehash) => {
     return UserInfo.create({
-        user_id: user.dataValues.id,
+        user_id: user_id,
         name: name,
         sex: sex,
         height: parseInt(height),
-        current_weight: parseInt(weight)
-    }).then(data => {return data})
+        image: image,
+        deletehash: deletehash
+    }).then(data => {
+        return data
+    }).catch(e => console.log(e))
 
 }
 
 exports.getUserInfo = (id) => {
     return UserInfo.findByPk(id)
         .then(data => {return data})
+        .error(e => console.log(e))
+}
+
+exports.getUserInfoByUserId = (userId) => {
+    return UserInfo.findAll({
+        where:{
+            user_id : userId
+        }
+    }).then(data => {return data})
         .error(e => console.log(e))
 }
 
@@ -134,6 +148,28 @@ exports.getFeedWorkouts = () => {
         .catch(error => console.log(error))
 }
 
+exports.getFeedInfo = async (workouts) => {
+    var i;
+    var feedInfo = [];
+    for(i = 0; i < workouts.length; i++){
+        var workout = workouts[i];
+        var userId = workout.dataValues.user_id;
+        var user = await this.getUser(userId);
+        var userInfo = await this.getUserInfoByUserId(userId);
+
+        var workoutType;
+        if(workout.dataValues.type == "Gym Session"){ //Get the session
+             workoutType = await this.getSessions(workout.dataValues.id);
+        }
+        else{ //If workout is a group training
+            workoutType = await this.getGroupTraining(workout.dataValues.group_training_id);
+        }
+        var infoObject = {user: user, userInfo: userInfo, workout: workout, workoutType: workoutType}
+        feedInfo.push(infoObject);
+    }
+    return feedInfo;
+}
+
 // Get the muscle progress entries of a user with user_id
 exports.getMuscleProgress = (user_id) => {
     return User.findByPk(user_id)
@@ -166,18 +202,27 @@ exports.getGroupTraining = (id) => {
         .catch(error => console.log(error))
 }
 
-function createSession(exercise, workout, wei, set, rep, dur) {
-    return Session.create({
-        weight: wei,
-        sets: set,
-        reps: rep,
-        duration: dur
-    }).then(newSession => {
-        return newSession
-    })
+exports.addProgress = (user_id, mode, date, data) => {
+    if(mode === 'weight') {
+        return WeightProgress.create({
+            user_id: user_id,
+            date: date,
+            kg: data
+        }).then(newprogress => {
+            return newprogress
+        }).catch(e => console.log(e))
+    } else {
+        return MuscleMassProgress.create({
+            user_id: user_id,
+            date: date,
+            percentage: data
+        }).then(newprogress => {
+            return newprogress
+        }).catch(e => console.log(e))
+    }
 }
 
-// Working
+// create a workout with groupTraining/sessions for a user 
 exports.makeWorkout = async (userID, groupTraining, sessions, date) => {
     let type = "Gym Session"
     if(groupTraining !== null) {
@@ -191,7 +236,6 @@ exports.makeWorkout = async (userID, groupTraining, sessions, date) => {
     if(groupTraining !== null) {
         const gt = await GroupTraining.findByPk(groupTraining.id)
         await gt.addWorkout(workout)
-        console.log(gt)
     } else if(sessions !== null) {
         sessions.map(async (sess) => {
             let weight, sets, reps, duration;
@@ -209,8 +253,8 @@ exports.makeWorkout = async (userID, groupTraining, sessions, date) => {
                     reps: reps,
                     duration: duration
                 })
-            await session.setExercise(exercise)
-            await session.setWorkout(workout)
+            await session.setExercise(exercise) // give session an exercise foregin key
+            await session.setWorkout(workout) // give session a workout foreign key
         })
     }
 }

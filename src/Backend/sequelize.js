@@ -57,8 +57,11 @@ module.exports = () => {
         height: {
             type: Sequelize.INTEGER
         },
-        current_weight: {
-            type: Sequelize.INTEGER
+        image: {
+            type: Sequelize.STRING
+        },
+        deletehash: {
+            type: Sequelize.STRING
         }
     }, {
         timestamps: false,
@@ -74,6 +77,9 @@ module.exports = () => {
         },
         type: {
             type: Sequelize.STRING
+        },
+        group_training_id : {
+          type: Sequelize.UUID
         },
         date: {
             type: Sequelize.DATE

@@ -55,7 +55,7 @@ class Diary extends Component {
     }
 
     handleCalories(session, exercise){
-        if(exercise.define_calories_upon == "reps"){
+        if(exercise.define_calories_upon === 'reps'){
             return exercise.calories * session.reps;
         }
         else{ //Else är bara duration?

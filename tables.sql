@@ -4,12 +4,14 @@ drop table user; # Om det finns en tidigare databas
 drop table user_info;
 drop table weight_progress;
 drop table muscle_mass_progress;
+drop table muscle_mass_progresses;
+drop table weight_progresses;
+
 
 drop table workout;
 drop table session;
 drop table exercise;
 drop table group_training;
-drop table session_workout;
 
 create table user (
 id varchar(36) NOT NULL,
@@ -26,10 +28,11 @@ user_id varchar(36),
 name varchar(64),
 sex varchar(64),
 height int,
-current_weight int
+image varchar(64),
+deletehash varchar(64)
 );
 
-insert into user_info values ("1","1",'Christine','female',157, 52);
+insert into user_info values ("1","1",'Christine','female',157,'http://testbild', 'blablabla');
 
 create table weight_progress (
 id varchar(36) NOT NULL,

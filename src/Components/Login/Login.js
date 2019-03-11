@@ -36,7 +36,7 @@ class Login extends Component {
     validateUser(email, password){
         this.callBackendAPI(email, password)
             .then(async res => {
-                if (res.user != "Invalid") {
+                if (res.user !== "Invalid") {
                     this.setState({ redirect: true, wrongPassword: false }); //TODOsparar användaren som loggar in (vilket är user)
                 } else {
                     this.setState({wrongPassword:true});
@@ -59,7 +59,7 @@ class Login extends Component {
     }
 
     handleSubmitBtn() {
-        if(this.state.email == '' || this.state.password == ''){
+        if(this.state.email === '' || this.state.password === ''){
             this.setState({wrongPassword:true});
 
         } else{
