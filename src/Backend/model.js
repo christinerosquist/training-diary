@@ -63,10 +63,8 @@ exports.getAllWorkouts = () => {
 }
 
 exports.getAllUsers = () => {
-    console.log("Got here")
     return User.findAll() // HÄR KAN MAN ÄNDRA FÖR ATT TESTA OLIKA TABELLER
         .then(data => {
-            console.log("number of users: " + data.length)
             return data
         })
         .catch(error => {console.log(error)})
@@ -83,8 +81,6 @@ exports.getUser = (userID) => {
 exports.getAllGroupTrainings = () => {
     return GroupTraining.findAll()
         .then(gts => {
-            console.log("model gts ")
-            console.log(gts)
             return gts
         })
         .catch(error => {console.log(error)})
@@ -155,7 +151,7 @@ exports.getFeedInfo = async (workouts) => {
         var userInfo = await this.getUserInfoByUserId(userId);
 
         var workoutType;
-        if(workout.dataValues.type == "Gym Session"){ //Get the session
+        if(workout.dataValues.type === "Gym Session"){ //Get the session
              workoutType = await this.getSessions(workout.dataValues.id);
         }
         else{ //If workout is a group training
@@ -286,11 +282,11 @@ exports.addSession = (session) => {
 exports.validateUser = (users, email, password) => {
     var userToReturn;
     users.forEach(function (user) {
-        if (user.dataValues.email == email && validatePassword(user, password)) { //Testar bara ska sen gå igenom hashningen
+        if (user.dataValues.email === email && validatePassword(user, password)) {
             userToReturn = user;
         }
     })
-    if(userToReturn == undefined){
+    if(userToReturn === undefined){
         return null;
     }
     else return userToReturn;

@@ -47,7 +47,7 @@ class AddWorkout extends Component {
         super(props)
 
         this.state = {
-            ...this.getInitialState(),
+            ...this.getStartStates(),
             mode: 'group',
             exerciseList: [],
             groupTrainingList: [],
@@ -69,7 +69,6 @@ class AddWorkout extends Component {
         fetch('/api/getgrouptrainings')
             .then(res => res.json())
             .then(data => {
-                console.log(data.group_trainings)
                 this.setState({
                     groupTrainingList: data.group_trainings,
                     exerciseList: data.exercises
@@ -86,7 +85,7 @@ class AddWorkout extends Component {
             })
     }
 
-    getInitialState() {
+    getStartStates() {
         return {
             groupTraining: null,
             exercise: null,
@@ -108,8 +107,7 @@ class AddWorkout extends Component {
 
     setGroupMode() {
         if(this.state.added) {
-            console.log("reset state")
-            this.setState(this.getInitialState())
+            this.setState(this.getStartStates())
         }
         this.setState({
             mode: 'group',
@@ -123,9 +121,8 @@ class AddWorkout extends Component {
 
     setGymMode() {
         if(this.state.added) {
-            console.log("reset state")
             this.setState({
-                ...this.getInitialState(),
+                ...this.getStartStates(),
                 mode: 'gym'
             })
         } else {
@@ -139,10 +136,7 @@ class AddWorkout extends Component {
     }
 
     handleChangeSession(e) {
-        console.log('change session')
-
         let changed = e.target
-        console.log(changed.name)
         switch(changed.name) {
             case 'duration':
                 this.setState({
@@ -182,7 +176,6 @@ class AddWorkout extends Component {
 
     handleAddWorkout(e) {
         e.preventDefault()
-        console.log("add workout")
         this.setState({
             added: true
         })
@@ -198,7 +191,7 @@ class AddWorkout extends Component {
 
     handleNewWorkout(e) {
         e.preventDefault()
-        this.setState(this.getInitialState())
+        this.setState(this.getStartStates())
     }
 
     handleAddSession(e) {
@@ -207,8 +200,6 @@ class AddWorkout extends Component {
             added: false
         })
         let newSession = this.state.session
-        console.log("add session")
-        console.log(newSession)
         this.setState(prevState => ({
             sessions: [...prevState.sessions, newSession]
         }))
@@ -241,7 +232,7 @@ class AddWorkout extends Component {
                 exercise = JSON.parse(selected)
             }
             this.setState({
-                ...this.getInitialState(),
+                ...this.getStartStates(),
                 exercise: exercise
             })
         }

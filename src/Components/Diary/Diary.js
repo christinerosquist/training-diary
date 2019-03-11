@@ -19,10 +19,6 @@ class Diary extends Component {
         this.getDiary(nextProps.userId);
     }
 
-    componentDidMount() {
-        this.getDiary(this.props.userId);
-    }
-
     getDiary(userId){
         fetch('/api/profile/' + userId)
             .then(res => res.json())
@@ -38,9 +34,7 @@ class Diary extends Component {
     }
 
     handleClick(workout_id, workout_type, group_training_id) {
-        console.log(workout_type)
         if(this.state[workout_id] === undefined) {
-            console.log("I don't have any saved data, so lets get some!")
 
             if (workout_type === 'Gym Session') {
 

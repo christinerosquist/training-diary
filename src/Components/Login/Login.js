@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './Login.css'
 import Redirect from "react-router-dom/es/Redirect";
 import {Link} from "react-router-dom";
+import moment from "moment/moment";
 
 
 class Login extends Component {
@@ -34,27 +35,29 @@ class Login extends Component {
             .catch(error => console.log(error))
     }
 
-    callBackendAPI = async (email, password) => {
-        const response = await fetch('/api/validateuser/' + email + "/" + password);
-        const body = await response.json()
-
-        if(response.status !== 200){
-            throw Error(body.message)
-        }
-        return body
-    }
-
     validateUser(email, password){
-        this.callBackendAPI(email, password)
-            .then(async res => {
-                if (res.user !== "Invalid") {
-                    this.setState({ redirect: true, wrongPassword: false }); //TODOsparar användaren som loggar in (vilket är user)
+
+        fetch('/api/validateuser', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        })
+            .then(res => res.json())
+            .then(body => {
+                console.log(body)
+                if (body.user !== "Invalid") {
+                    this.setState({ redirect: true, wrongPassword: false });
                 } else {
                     this.setState({wrongPassword:true});
                 }
             })
-            .catch(err => console.log(err))
-
+            .catch(e => console.log(e))
     }
 
     handleEmail(event) {

@@ -4,12 +4,6 @@ import {Link} from "react-router-dom";
 
 class FeedItem extends Component {
 
-    getUrl(user){
-        var userId = user.id;
-        var url = "/profile/" + userId;
-        return url;
-    }
-
     render() {
         const { user, userInfo, workout, workoutType} = this.props.feedInfo;
 
@@ -23,7 +17,7 @@ class FeedItem extends Component {
                     <div className='col-sm-6 rightCol'>
                         <p id="feedDesc">{userInfo[0].name} just finished a {workoutType.duration} min {workout.type} ({workoutType.name})</p>
                         <p>{workout.likes} people like this.</p>
-                        <Link to={this.getUrl(user)}> <button type="submit" className="btn btn-primary" id="visitProfileBtn"> Visit user profile</button></Link>
+                        <Link to={'/profile/' + user.id}> <button type="submit" className="btn btn-primary" id="visitProfileBtn"> Visit user profile</button></Link>
                     </div>
                 </div>
 
@@ -37,7 +31,7 @@ class FeedItem extends Component {
                 <div className='col-sm-6 rightCol'>
                     <p id="feedDesc">{userInfo[0].name} just finished a {workout.type}.</p>
                     <p>{workout.likes} people like this.</p>
-                    <Link to={this.getUrl(user)}> <button type="submit" className="btn btn-primary" id="visitProfileBtn">Visit user profile</button></Link>
+                    <Link to={'/profile/' + user.id}> <button type="submit" className="btn btn-primary" id="visitProfileBtn">Visit user profile</button></Link>
                 </div>
             </div>
         );
