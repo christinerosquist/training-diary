@@ -25,7 +25,8 @@ module.exports = () => {
             defaultValue: Sequelize.UUIDV1
         },
         email: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            unique: {args: true, msg: "Email must be unique"}
         },
         hash: {
             type: Sequelize.TEXT('long'),

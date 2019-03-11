@@ -15,7 +15,7 @@ drop table group_training;
 
 create table user (
 id varchar(36) NOT NULL,
-email varchar(64),
+email varchar(64) UNIQUE,
 hash longtext,
 salt varchar(64)
 );

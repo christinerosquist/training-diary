@@ -281,7 +281,6 @@ exports.validateUser = (users, email, password) => {
     else return userToReturn;
 }
 
-
 function validatePassword (user, password) {
     var hash = crypto.pbkdf2Sync(password, user.dataValues.salt, 1000, 64, `sha512`).toString(`hex`);
     return user.dataValues.hash === hash; //Returnerar true om det är samma lösen annars ej
