@@ -71,6 +71,8 @@ exports.getUser = (userID) => {
 exports.getAllGroupTrainings = () => {
     return GroupTraining.findAll()
         .then(gts => {
+            console.log("model gts ")
+            console.log(gts)
             return gts
         })
         .catch(error => {console.log(error)})
@@ -117,6 +119,14 @@ exports.getExercises = async (sessions) => {
     return exercises;
 }
 
+exports.getAllExercises = () => {
+    return Exercise.findAll()
+        .then(exercises => {
+            return exercises
+        })
+        .catch(error => {console.log(error)})
+}
+
 // Get the 5 latest workouts that has been added
 exports.getFeedWorkouts = () => {
     return Workout.findAll({limit: 5, order: [['date', 'DESC']]})
@@ -156,33 +166,53 @@ exports.getGroupTraining = (id) => {
         .catch(error => console.log(error))
 }
 
-exports.createSession = (exercise, workout, wei, set, rep) => {
+function createSession(exercise, workout, wei, set, rep, dur) {
     return Session.create({
         weight: wei,
         sets: set,
-        reps: rep
+        reps: rep,
+        duration: dur
     }).then(newSession => {
-        newSession.setExercise(exercise)
-        workout.addSession(newSession)
         return newSession
     })
 }
 
 // Working
-exports.makeWorkout = async (userID, groupTrainID, date) => {
-    let type = "Session"
-    if(groupTrainID !== null) {
+exports.makeWorkout = async (userID, groupTraining, sessions, date) => {
+    let type = "Gym Session"
+    if(groupTraining !== null) {
         type = "Group Training"
     }
 
     const user = await User.findByPk(userID)
-    const gt = await GroupTraining.findByPk(groupTrainID)
     const workout = await Workout.create({type: type, date: date, likes: 0})
-
     await workout.setUser(user)
-    await gt.addWorkout(workout)
-    console.log(gt)
-    console.log(workout)
+
+    if(groupTraining !== null) {
+        const gt = await GroupTraining.findByPk(groupTraining.id)
+        await gt.addWorkout(workout)
+        console.log(gt)
+    } else if(sessions !== null) {
+        sessions.map(async (sess) => {
+            let weight, sets, reps, duration;
+            if(sess.cardio) {
+                weight = sets = reps = null
+                duration = sess.duration
+            } else {
+                [weight, sets, reps] = [sess.weight, sess.sets, sess.reps]
+                duration = null
+            }
+            const exercise = await Exercise.findByPk(sess.exerciseId)
+            let session = await Session.create({
+                    weight: weight,
+                    sets: sets,
+                    reps: reps,
+                    duration: duration
+                })
+            await session.setExercise(exercise)
+            await session.setWorkout(workout)
+        })
+    }
 }
 
 exports.createExercise = (name, caloriesUpon, calories) => {

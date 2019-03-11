@@ -91,6 +91,8 @@ calories int
 insert into exercise values("1",'Bicep curl','reps',8);
 insert into exercise values("2",'Squat','reps',10);
 insert into exercise values("3",'Dead lifts','reps',15);
+insert into exercise values("4",'Stair Climber','minutes',25);
+insert into exercise values("5",'Jogging','minutes',20);
 
 
 create table group_training (

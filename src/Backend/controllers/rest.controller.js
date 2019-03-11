@@ -37,9 +37,11 @@ router.get('/getgrouptraining/:id', async function (req, res) {
 router.get('/getgrouptrainings', async function (req, res) {
     console.log("ggt")
     const group_trainings = await model.getAllGroupTrainings()
+    const exercises = await model.getAllExercises()
 
     res.json({
-        group_trainings: group_trainings
+        group_trainings: group_trainings,
+        exercises: exercises
     })
 });
 
@@ -55,19 +57,7 @@ router.get('/getprogress/:id', async function (req, res) {
 });
 
 router.get('/feed', async function (req, res) {
-    const entries = await model.getFeedWorkouts()
-    const exEntries = await model.createWorkoutObject(entries)
 
-    console.log(exEntries)
-
-    res.json({
-        entries: exEntries
-    });
-});
-
-router.post('/addworkout', async function (req, res) {
-    res.json({
-    });
 });
 
 router.post('/addprogress', async function (req, res) {
@@ -89,17 +79,11 @@ router.get('/testconnection', async function (req, res) {
     })
 });
 
-router.get('/addworkout/:userid/:gtid', async function (req, res) {
-    let today = new Date()
-    console.log(req.params)
-    const workout = await model.makeWorkout(req.params.userid, req.params.gtid, today)
-    const workouts = await model.getAllWorkouts()
+router.post('/addworkout', async function (req, res) {
+    console.log(req.body)
+    const workout = await model.makeWorkout(req.body.user, req.body.group_training, req.body.sessions, req.body.date)
 
-    console.log(workouts)
-
-    res.json({
-        express: "Done"
-    })
+    return res.json({data: workout});
 });
 
 router.get('/validateuser/:email/:password', async function (req, res) {
