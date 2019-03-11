@@ -15,24 +15,13 @@ class ProfileHeader extends Component {
         fetch('/api/getUserInfo/' + nextProps.userId)
             .then(res => res.json())
             .then(data => {
-                if(data.userInfo != 'Not logged in'){
+                if(data.userInfo !== 'Not logged in'){
                     this.setState({userInfo: data.userInfo[0]})
                 }
             })
             .catch(error => console.log(error))
 
         this.setState({userId:nextProps.userId})
-    }
-
-    componentDidMount() {
-        fetch('/api/getUserInfo/' + this.props.userId)
-            .then(res => res.json())
-            .then(data => {
-                if(data.userInfo != 'Not logged in'){
-                    this.setState({userInfo: data.userInfo[0]})
-                }
-            })
-            .catch(error => console.log(error))
     }
 
     render() {

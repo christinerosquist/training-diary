@@ -23,7 +23,6 @@ class ProfilePage extends Component {
     }
 
     render() {
-        console.log("User id is now: " + this.state.id);
         return (
             <div>
                 <Header/>

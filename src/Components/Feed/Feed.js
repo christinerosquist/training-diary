@@ -31,7 +31,6 @@ class Feed extends Component {
                     this.setState({redirect:true})
                 }
                 else{
-                    console.log(data.feedInfo)
                     this.setState({entries: data.feedInfo})
                 }
             })

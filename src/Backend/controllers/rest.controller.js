@@ -53,12 +53,9 @@ router.get('/profile/:id', async function (req, res) {
 });
 
 router.get('/getsessions/:id', async function (req, res) {
-    console.log("got here haha")
     const workout_id = req.params.id
     const sessions = await model.getSessions(workout_id);
     const exercises = await model.getExercises(sessions);
-    console.log(exercises);
-    console.log(sessions);
 
     res.json({
         sessions: sessions,
@@ -76,7 +73,6 @@ router.get('/getgrouptraining/:id', async function (req, res) {
 });
 
 router.get('/getgrouptrainings', async function (req, res) {
-    console.log("ggt")
     const group_trainings = await model.getAllGroupTrainings()
     const exercises = await model.getAllExercises()
 
@@ -99,10 +95,8 @@ router.get('/getprogress/:id', async function (req, res) {
 
 router.get('/feed', async function (req, res) {
     if(req.session.loggedIn){
-        console.log(req.session.currentUser);
         const workouts = await model.getFeedWorkouts();
         const feedInfo = await model.getFeedInfo(workouts);
-        console.log(feedInfo);
         res.json({
             feedInfo: feedInfo, //Returns array containing information to be posted in feed
         });
@@ -124,7 +118,6 @@ router.post('/addprogress', async function (req, res) {
 });
 
 router.get('/testconnection', async function (req, res) {
-    console.log("Got here");
     const users = await model.getUsers();
     const validUser = await model.validateUser(users);
     if(validUser){
@@ -138,14 +131,13 @@ router.get('/testconnection', async function (req, res) {
 });
 
 router.post('/addworkout', async function (req, res) {
-    console.log(req.body)
     const workout = await model.makeWorkout(req.body.user, req.body.group_training, req.body.sessions, req.body.date)
 
     return res.json({data: workout});
 });
 
 router.get('/validateuser/:email/:password', async function (req, res) {
-    var users = await model.getUsers(); //Gets all the users from the db
+    var users = await model.getAllUsers(); //Gets all the users from the db
     var validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
     if(validUser != null){
         req.session.loggedIn = true;
