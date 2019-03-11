@@ -5,6 +5,7 @@
   "dependencies": {
     "better-logging": "^3.3.2",
     "chart.js": "^2.7.3",
+    "config": "^3.0.1",
     "express-session": "^1.15.6",
     "express-socket.io-session": "^1.3.5",
     "moment": "^2.24.0",

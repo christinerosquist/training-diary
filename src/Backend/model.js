@@ -14,12 +14,14 @@ exports.createUser = (email, password) => {
         return data
     }).catch(e => console.log(e))
 }
-exports.createUserInfo = (user_id, name, sex, height) => {
+exports.createUserInfo = (user_id, name, sex, height, image, deletehash) => {
     return UserInfo.create({
         user_id: user_id,
         name: name,
         sex: sex,
         height: parseInt(height),
+        image: image,
+        deletehash: deletehash
     }).then(data => {
         return data
     }).catch(e => console.log(e))
@@ -191,8 +193,6 @@ exports.getGroupTraining = (id) => {
 }
 
 exports.addProgress = (user_id, mode, date, data) => {
-    console.log("Model is creating progress!")
-    console.log(user_id, mode, date, data)
     if(mode === 'weight') {
         return WeightProgress.create({
             user_id: user_id,

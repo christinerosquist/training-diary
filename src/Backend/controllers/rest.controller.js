@@ -108,7 +108,7 @@ router.post('/createuser', async function (req, res){
     const muscle = parseInt(req.body.muscle)
 
     const user = await model.createUser(req.body.email, req.body.password)
-    const userinfo = await model.createUserInfo(user.id, req.body.name, req.body.sex, req.body.height)
+    const userinfo = await model.createUserInfo(user.id, req.body.name, req.body.sex, req.body.height, req.body.image, req.body.deletehash)
     const newwprogress = await model.addProgress(user.id, 'weight', req.body.date, weight)
     const newmprogress = await model.addProgress(user.id, 'muscle', req.body.date, muscle)
 
