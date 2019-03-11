@@ -160,15 +160,21 @@ router.get('/validateuser/:email/:password', async function (req, res) {
 });
 
 router.post('/createuser', async function (req, res){
+    const user = await model.createUser(req.body.email, req.body.password)
+    if(!user){
+        res.json({success: false})
+    } else {
+        res.json({success: true, id: user.id})
+    }
+});
+
+router.post('/createuserinfo', async function (req, res){
     const weight = parseInt(req.body.weight)
     const muscle = parseInt(req.body.muscle)
 
-    const user = await model.createUser(req.body.email, req.body.password)
-    const userinfo = await model.createUserInfo(user.id, req.body.name, req.body.sex, req.body.height, req.body.image, req.body.deletehash)
-    const newwprogress = await model.addProgress(user.id, 'weight', req.body.date, weight)
-    const newmprogress = await model.addProgress(user.id, 'muscle', req.body.date, muscle)
-
-    res.json({express : "Done"})
-});
+    const userinfo = await model.createUserInfo(req.body.id, req.body.name, req.body.sex, req.body.height, req.body.link, req.body.deletehash)
+    const newwprogress = await model.addProgress(req.body.id, 'weight', req.body.date, weight)
+    const newmprogress = await model.addProgress(req.body.id, 'muscle', req.body.date, muscle)
+})
 
 module.exports = router; // export the router with the functions for the urls.
