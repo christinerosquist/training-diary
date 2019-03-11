@@ -78,9 +78,11 @@ router.get('/getgrouptraining/:id', async function (req, res) {
 router.get('/getgrouptrainings', async function (req, res) {
     console.log("ggt")
     const group_trainings = await model.getAllGroupTrainings()
+    const exercises = await model.getAllExercises()
 
     res.json({
-        group_trainings: group_trainings
+        group_trainings: group_trainings,
+        exercises: exercises
     })
 });
 
@@ -113,11 +115,6 @@ router.get('/feed', async function (req, res) {
 
 });
 
-router.post('/addworkout', async function (req, res) {
-    res.json({
-    });
-});
-
 router.post('/addprogress', async function (req, res) {
         const userId = req.session.currentUser;
         const newprogress = await model.addProgress(userId, req.body.mode, req.body.date, req.body.data)
@@ -140,9 +137,16 @@ router.get('/testconnection', async function (req, res) {
     })
 });
 
-router.get('/validateuser/:email/:password', async function (req, res){
-    const users = await model.getAllUsers(); //Gets all the users from the db
-    const validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
+router.post('/addworkout', async function (req, res) {
+    console.log(req.body)
+    const workout = await model.makeWorkout(req.body.user, req.body.group_training, req.body.sessions, req.body.date)
+
+    return res.json({data: workout});
+});
+
+router.get('/validateuser/:email/:password', async function (req, res) {
+    var users = await model.getUsers(); //Gets all the users from the db
+    var validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
     if(validUser != null){
         req.session.loggedIn = true;
         req.session.currentUser = validUser.dataValues.id;
@@ -160,7 +164,7 @@ router.post('/createuser', async function (req, res){
     const muscle = parseInt(req.body.muscle)
 
     const user = await model.createUser(req.body.email, req.body.password)
-    const userinfo = await model.createUserInfo(user.id, req.body.name, req.body.sex, req.body.height)
+    const userinfo = await model.createUserInfo(user.id, req.body.name, req.body.sex, req.body.height, req.body.image, req.body.deletehash)
     const newwprogress = await model.addProgress(user.id, 'weight', req.body.date, weight)
     const newmprogress = await model.addProgress(user.id, 'muscle', req.body.date, muscle)
 

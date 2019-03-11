@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import Redirect from "react-router-dom/es/Redirect";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import moment from "moment/moment";
+import * as config from '../../config';
 
 class CreateUser extends Component {
     constructor(props) {
@@ -16,25 +17,16 @@ class CreateUser extends Component {
             weight:'',
             muscle: '',
             redirect: false,
+            selectedFile: null
         }
-
-        this.handleEmail = this.handleEmail.bind(this);
-        this.handlePassword = this.handlePassword.bind(this);
-        this.handleName = this.handleName.bind(this);
-        this.handleSex = this.handleSex.bind(this);
-        this.handleHeight = this.handleHeight.bind(this);
-        this.handleWeight = this.handleWeight.bind(this);
-
-        this.handleSubmitBtn = this.handleSubmitBtn.bind(this);
-        this.handleForm = this.handleForm.bind(this);
-
     }
 
     componentDidMount(){
         this.setState({redirect: false})
     }
 
-    createUser = (email, password, name, sex, height, weight, muscle) => {
+    createUser = (email, password, name, sex, height, weight, muscle, img, deletehash) => {
+        console.log("img and deletehash: ", img, deletehash)
         fetch('/api/createuser', {
             method: 'POST',
             headers: {
@@ -49,7 +41,9 @@ class CreateUser extends Component {
                 height: height,
                 weight: weight,
                 muscle: muscle,
-                date: moment(new Date()).format("YYYY-MM-DD")
+                date: moment(new Date()).format("YYYY-MM-DD"),
+                image: img,
+                deletehash: deletehash
             })
         })
             .then(res => res.json())
@@ -60,37 +54,41 @@ class CreateUser extends Component {
             .catch(error => console.log(error))
     }
 
-    handleEmail(event) {
+    handleFileChange = (event) => {
+        this.setState({ selectedFile: event.target.files[0] })
+    }
+
+    handleEmail = (event) => {
         this.setState({
             email: event.target.value,
         })
     }
 
-    handlePassword(event) {
+    handlePassword = (event) => {
         this.setState({
             password: event.target.value,
         })
     }
 
-    handleName(event) {
+    handleName = (event) => {
         this.setState({
             name: event.target.value,
         })
     }
 
-    handleSex(event) {
+    handleSex = (event) => {
         this.setState({
             sex: event.target.value,
         })
     }
 
-    handleHeight(event) {
+    handleHeight = (event) => {
         this.setState({
             height: event.target.value,
         })
     }
 
-    handleWeight(event) {
+    handleWeight = (event) => {
         this.setState({
             weight: event.target.value,
         })
@@ -102,11 +100,24 @@ class CreateUser extends Component {
         })
     }
 
-    handleSubmitBtn() { //Hantera bättre ifall man skickar tomma fält?
-        this.createUser(this.state.email, this.state.password, this.state.name, this.state.sex, this.state.height, this.state.weight, this.state.muscle)
+    // deletehash is if we want to delete the image from imgur. You do this with https://api.imgur.com/3/image/{id}, where {id} is the deletehash.
+    handleSubmitBtn = () => {
+        fetch('https://api.imgur.com/3/image/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Client-ID ${config.client}`
+            },
+            body: this.state.selectedFile
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.createUser(this.state.email, this.state.password, this.state.name, this.state.sex, this.state.height, this.state.weight, this.state.muscle, data.data.link, data.data.deletehash)
+            })
+            .catch(error => console.log(error))
+
     }
 
-    handleForm(e){
+    handleForm = (e) => {
         e.preventDefault();
     }
 
@@ -134,6 +145,10 @@ class CreateUser extends Component {
                             <input type="name" value={this.state.name} onChange={this.handleName} className="form-control" id="exampleInputName1" placeholder="Name"/>
                         </div>
                         <div className="form-group">
+                            <label>Profile picture</label>
+                            <input type="file" onChange={this.handleFileChange} />
+                        </div>
+                        <div className="form-group">
                             <label>Sex</label>
                             <select value={this.state.sex} onChange={this.handleSex}>
                                 <option>Female</option>
@@ -145,11 +160,11 @@ class CreateUser extends Component {
                             <input value={this.state.height} onChange={this.handleHeight} type="Height" className="form-control" id="exampleInputHeight1" placeholder="Height"/>
                         </div>
                         <div className="form-group">
-                            <label >Weight</label>
+                            <label>Weight</label>
                             <input value={this.state.weight} onChange={this.handleWeight} type="name" className="form-control" id="exampleInputWeight1" placeholder="Weight"/>
                         </div>
                         <div className="form-group">
-                            <label >Muscle percent</label>
+                            <label>Muscle percent</label>
                             <input value={this.state.muscle} onChange={this.handleMuscle} type="name" className="form-control" id="exampleInputMuscle1" placeholder="Muscle"/>
                         </div>
                         <button onClick={this.handleSubmitBtn} type="submit" className="btn btn-primary">Submit</button>

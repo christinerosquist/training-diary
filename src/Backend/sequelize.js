@@ -57,6 +57,12 @@ module.exports = () => {
         height: {
             type: Sequelize.INTEGER
         },
+        image: {
+            type: Sequelize.STRING
+        },
+        deletehash: {
+            type: Sequelize.STRING
+        }
     }, {
         timestamps: false,
         underscored: true,
