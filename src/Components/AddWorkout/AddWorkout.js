@@ -185,7 +185,6 @@ class AddWorkout extends Component {
                 sessions: this.state.sessions,
                 group_training: this.state.groupTraining,
                 date: moment(this.state.date).format("YYYY-MM-DD"),
-                user: 1
             })
         })
             .then(res => res.json())

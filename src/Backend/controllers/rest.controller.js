@@ -125,7 +125,7 @@ router.post('/addprogress', async function (req, res) {
 
 router.get('/testconnection', async function (req, res) {
     console.log("Got here");
-    const users = await model.getUsers();
+    const users = await model.getAllUsers();
     const validUser = await model.validateUser(users);
     if(validUser){
         res.json({
@@ -139,13 +139,13 @@ router.get('/testconnection', async function (req, res) {
 
 router.post('/addworkout', async function (req, res) {
     console.log(req.body)
-    const workout = await model.makeWorkout(req.body.user, req.body.group_training, req.body.sessions, req.body.date)
+    const workout = await model.makeWorkout(req.session.currentUser, req.body.group_training, req.body.sessions, req.body.date)
 
     return res.json({data: workout});
 });
 
 router.get('/validateuser/:email/:password', async function (req, res) {
-    var users = await model.getUsers(); //Gets all the users from the db
+    var users = await model.getAllUsers(); //Gets all the users from the db
     var validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
     if(validUser != null){
         req.session.loggedIn = true;

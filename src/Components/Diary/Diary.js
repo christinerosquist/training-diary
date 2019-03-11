@@ -78,6 +78,13 @@ class Diary extends Component {
         }
     }
 
+    handleDuration(duration){
+        if(duration!=null){
+            return duration + " minutes"
+        }
+        else return "-"
+    }
+
     render() {
         if (this.state.redirect) {
             this.setState({redirect:false})
@@ -120,7 +127,7 @@ class Diary extends Component {
                                             <br />
                                             <b>Reps:</b> {mapping.session.reps}
                                             <br />
-                                            <b>Duration:</b> {mapping.session.duration + ' minutes'}
+                                            <b>Duration:</b> {this.handleDuration(mapping.session.duration)}
                                             <br />
                                             <b>Calories burned:</b> {this.handleCalories(mapping.session, mapping.exercise) + ' calories'}
                                             <br /><br/>
