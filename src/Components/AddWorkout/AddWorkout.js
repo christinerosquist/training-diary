@@ -96,7 +96,7 @@ class AddWorkout extends Component {
 
     setGroupMode() {
         if(this.state.added) {
-            this.setState(this.getInitialState())
+            this.setState(this.getStartStates())
         }
         this.setState({
             mode: 'group',
@@ -111,7 +111,7 @@ class AddWorkout extends Component {
     setGymMode() {
         if(this.state.added) {
             this.setState({
-                ...this.getInitialState(),
+                ...this.getStartStates(),
                 mode: 'gym'
             })
         } else {
@@ -187,7 +187,7 @@ class AddWorkout extends Component {
 
     handleNewWorkout(e) {
         e.preventDefault()
-        this.setState(this.getInitialState())
+        this.setState(this.getStartStates())
     }
 
     handleAddSession(e) {
@@ -228,7 +228,7 @@ class AddWorkout extends Component {
                 exercise = JSON.parse(selected)
             }
             this.setState({
-                ...this.getInitialState(),
+                ...this.getStartStates(),
                 exercise: exercise
             })
         }
@@ -283,7 +283,7 @@ class AddWorkout extends Component {
                                     null
                                     :
                                     <div>
-                                        <div id="gtCalendar" class="calendarContainer">
+                                        <div id="gtCalendar" className="calendarContainer">
                                             <b>Enter date:</b>
                                             <Calendar
                                                 onChange={this.onDateChange}
@@ -341,7 +341,7 @@ class AddWorkout extends Component {
                                 { added ?
                                     null :
                                     <div>
-                                    <div id="sessCalendar" class="calendarContainer">
+                                    <div id="sessCalendar" className="calendarContainer">
                                         <b>Enter date:</b>
                                         <Calendar
                                             onChange={this.onDateChange}

@@ -14,7 +14,8 @@ class AddProgress extends Component {
             inputkg: '',
             percent: '',
             updated: false,
-            redirect:false
+            redirect:false,
+            user_id: null
         }
 
         this.setWeightMode = this.setWeightMode.bind(this)
@@ -26,7 +27,7 @@ class AddProgress extends Component {
             .then(res => res.json())
             .then(data => {
                 if(data.user_id === 'Not logged in'){
-                    this.setState({redirect:true})
+                    this.setState({redirect: true})
                 }
                 else{
                     this.setState({user_id: data.user_id})

@@ -137,14 +137,14 @@ router.get('/testconnection', async function (req, res) {
 });
 
 router.post('/addworkout', async function (req, res) {
-    const workout = await model.makeWorkout(req.body.user, req.body.group_training, req.body.sessions, req.body.date)
+    const workout = await model.makeWorkout(req.session.currentUser, req.body.group_training, req.body.sessions, req.body.date)
 
     return res.json({data: workout});
 });
 
-router.get('/validateuser/:email/:password', async function (req, res) {
+router.post('/validateuser', async function (req, res) {
     var users = await model.getAllUsers(); //Gets all the users from the db
-    var validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
+    var validUser = await model.validateUser(users, req.body.email, req.body.password); //Function that the user if its valid
     if(validUser != null){
         req.session.loggedIn = true;
         req.session.currentUser = validUser.dataValues.id;

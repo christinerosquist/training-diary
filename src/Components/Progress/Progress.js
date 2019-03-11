@@ -14,16 +14,13 @@ class Progress extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("HERE")
         this.setState({ready: false, userId: nextProps.userId})
         console.log(nextProps.userId)
         this.updateData(nextProps.userId, false)
     }
 
     updateData(id, bool) {
-        console.log("updatedata")
         if(bool === false) {
-            console.log("inside if!")
             mlabels.length = 0
             mdatasets[0].data.length = 0
             wlabels.length = 0
