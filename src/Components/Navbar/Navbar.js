@@ -4,6 +4,20 @@ import {Link} from "react-router-dom";
 
 class Navbar extends Component {
 
+    logOut(){
+        fetch('/api/logOut', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(res => res.json())
+            .then()
+            .catch()
+        return "/"
+    }
+
     render() {
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -23,10 +37,13 @@ class Navbar extends Component {
                         <li className="nav-item">
                             <Link className="nav-link" to="/addprogress">Add new progress</Link>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to='/' onClick={this.logOut}>Log out</Link>
+                        </li>
                     </ul>
                     <form className="form-inline my-2 my-lg-0">
-                        <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
-                            <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="searchField"/>
+                            <button className="btn btn-outline-success my-2 my-sm-0" type="submit" id="searchBtn">Search</button>
                     </form>
                 </div>
             </nav>
