@@ -1,21 +1,42 @@
 import React, {Component} from 'react';
+import Calendar from "react-calendar";
+import './AddWorkout.css'
+import moment from "moment";
 
 function WorkoutInfo(props) {
     const name = props.name
     const duration = props.duration
     const calories = props.calories
+    const date = props.date
     const added = props.added
+    const sessions = props.sessions
+
+    let dateMessage = null
     let addMessage = 'You will add '
 
     if(added) {
         addMessage = 'You have added '
+        dateMessage = <span> <b>Date:</b> {moment(date).format("YYYY-MM-DD")} </span>
     }
-    const info =
-        <p>
-            {addMessage} <b>{name}</b> to your training diary.
-            <br /><b>Duration:</b> {duration}
-            <br /><b>Total calorie burn:</b> {duration * calories} calories.
-        </p>
+    let info = ''
+    if(name) {
+        info =
+            <p>
+                {addMessage} <b>{name}</b> to your training diary.
+                <br /><b>Duration:</b> {duration}
+                <br /><b>Total calorie burn:</b> {duration * calories} calories.
+                <br />{dateMessage}
+            </p>
+    } else {
+        let listItems = sessions.map((sess, index) =>
+            <li key={index}>{sess.name}, {sess.cardio ? sess.duration + ' minutes' : sess.weight + ' kilo, ' + sess.reps + 'x' + sess.sets}</li>
+        )
+        info =
+            <p>
+                {addMessage}the following to your training diary: {listItems}
+                <br />{dateMessage}
+            </p>
+    }
     return info
 }
 
@@ -24,21 +45,21 @@ class AddWorkout extends Component {
         super(props)
 
         this.state = {
+            ...this.getInitialState(),
             mode: 'group',
-            groupTraining: null,
-            groupTrainingList: [],
-            added: false
+            exerciseList: [],
+            groupTrainingList: []
         }
 
+        this.onDateChange = this.onDateChange.bind(this)
+        this.handleChangeSession = this.handleChangeSession.bind(this)
         this.handleAddWorkout = this.handleAddWorkout.bind(this)
+        this.handleNewWorkout = this.handleNewWorkout.bind(this)
+        this.handleAddSession = this.handleAddSession.bind(this)
         this.setGroupMode = this.setGroupMode.bind(this)
         this.setGymMode = this.setGymMode.bind(this)
         this.handleSelectGT = this.handleSelectGT.bind(this)
-    }
-
-    addWorkoutDB = async (userID, gtID) => {
-        const response = await fetch('/api/addworkout/1/' + gtID)
-        console.log(response)
+        this.handleSelectExercise = this.handleSelectExercise.bind(this)
     }
 
     componentDidMount() {
@@ -46,35 +67,150 @@ class AddWorkout extends Component {
             .then(res => res.json())
             .then(data => {
                 console.log(data.group_trainings)
-                this.setState({groupTrainingList: data.group_trainings})
+                this.setState({
+                    groupTrainingList: data.group_trainings,
+                    exerciseList: data.exercises
+                })
             })
             .catch(error => console.log(error))
     }
 
+    getInitialState() {
+        return {
+            groupTraining: null,
+            exercise: null,
+            isCardio: false,
+            session: {
+                exerciseId: '',
+                name: '',
+                cardio: false,
+                weight: 10,
+                sets: 5,
+                reps: 5,
+                duration: 30
+            },
+            sessions: [],
+            date: new Date(),
+            added: false,
+        }
+    }
+
     setGroupMode() {
+        if(this.state.added) {
+            console.log("reset state")
+            this.setState(this.getInitialState())
+        }
         this.setState({
             mode: 'group',
             added: false
         })
     }
 
-    setGymMode() {
-        this.setState({
-            mode: 'gym',
-            groupTraining: null,
-            added: false
-        })
+    onDateChange(date) {
+        this.setState({date: date})
     }
 
-    handleAddWorkout() {
-        console.log(this.state.groupTraining)
+    setGymMode() {
+        if(this.state.added) {
+            console.log("reset state")
+            this.setState({
+                ...this.getInitialState(),
+                mode: 'gym'
+            })
+        } else {
+            this.setState({
+                mode: 'gym',
+                groupTraining: null,
+                exercise: null,
+                added: false
+            })
+        }
+    }
+
+    handleChangeSession(e) {
+        console.log('change session')
+
+        let changed = e.target
+        console.log(changed.name)
+        switch(changed.name) {
+            case 'duration':
+                this.setState({
+                    session: {
+                        ...this.state.session,
+                        duration: changed.value
+                }
+                })
+                break;
+            case 'weight':
+                this.setState({
+                    session: {
+                        ...this.state.session,
+                        weight: changed.value
+                    }
+                })
+                break;
+            case 'sets':
+                this.setState({
+                    session: {
+                        ...this.state.session,
+                        sets: changed.value
+                    }
+                })
+                break;
+            case 'reps':
+                this.setState({
+                    session: {
+                        ...this.state.session,
+                        reps: changed.value
+                    }
+                })
+                break;
+            default:
+        }
+    }
+
+    handleAddWorkout(e) {
+        e.preventDefault()
+        console.log("add workout")
         this.setState({
             added: true
         })
-        console.log(this.state.added)
-        if(this.state.groupTraining !== null) {
-            this.addWorkoutDB("1", this.state.groupTraining.id)
-        }
+        fetch('/api/addworkout', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                sessions: this.state.sessions,
+                group_training: this.state.groupTraining,
+                date: moment(this.state.date).format("YYYY-MM-DD"),
+                user: 1
+            })
+        })
+            .then(res => res.json())
+            .then(data => {console.log(data)})
+            .catch(error => console.log(error))
+    }
+
+    handleNewWorkout(e) {
+        e.preventDefault()
+        console.log("new workout")
+        this.setState(this.getInitialState())
+    }
+
+    handleAddSession(e) {
+        e.preventDefault()
+        this.setState({
+            added: false
+        })
+        let clicked = e.target.name
+        let newSession = this.state.session
+        console.log("add session")
+        console.log(newSession)
+        this.setState(prevState => ({
+            sessions: [...prevState.sessions, newSession]
+        }))
     }
 
     handleSelectGT(e) {
@@ -92,13 +228,51 @@ class AddWorkout extends Component {
         }
     }
 
-    render() {
+    handleSelectExercise(e) {
+        let selected = e.target.value
+        let cardio = false
+        this.setState({
+            added: false
+        })
+        if(this.state.added) {
+            let exercise = null
+            if(selected !== 'Choose exercise') {
+                exercise = JSON.parse(selected)
+            }
+            this.setState({
+                ...this.getInitialState(),
+                exercise: exercise
+            })
+        }
+        if(selected !== 'Choose exercise'){
+            selected = JSON.parse(selected)
+            if(selected.define_calories_upon === 'minutes') {
+                cardio = true
+            }
+            this.setState({
+                session: {
+                    ...this.state.session,
+                    cardio: cardio,
+                    exerciseId: selected.id,
+                    name: selected.name
+                },
+                exercise: selected,
+                isCardio: cardio
+            })
+        } else {
+            this.setState({
+                exercise: null
+            })
+        }
+    }
 
+    render() {
+        let { mode, groupTraining, groupTrainingList, exercise, session, sessions, isCardio, exerciseList, date, added } = this.state
         return (
             <div className="container centered">
                 <div className="btn-group" style={{marginBottom: '30px'}}>
-                    <button type="button" onClick={this.setGroupMode} className={'btn btn-primary ' + (this.state.mode === 'group' ? 'active disabled': '')}>Group Training</button>
-                    <button type="button" onClick={this.setGymMode} className={'btn btn-primary ' + (this.state.mode === 'gym' ? 'active disabled': '')}>Gym session</button>
+                    <button type="button" onClick={this.setGroupMode} className={'btn btn-primary ' + (mode === 'group' ? 'active disabled': '')}>Group Training</button>
+                    <button type="button" onClick={this.setGymMode} className={'btn btn-primary ' + (mode === 'gym' ? 'active disabled': '')}>Gym session</button>
                 </div>
 
                 {   // the choose group training page
@@ -114,23 +288,87 @@ class AddWorkout extends Component {
                         <br />
                         {this.state.groupTraining !== null &&
                         <div style={{marginTop: '30px'}}>
-                            <WorkoutInfo name={this.state.groupTraining.name} duration={this.state.groupTraining.duration}
-                                calories={this.state.groupTraining.calories_per_minute} added={this.state.added}/>
-                            <button className="btn btn-primary" onClick={this.handleAddWorkout}>Add workout</button>
+                            <WorkoutInfo id="gtInfo" name={groupTraining.name} duration={groupTraining.duration}
+                                calories={groupTraining.calories_per_minute} date={date} added={added}/>
+
+                                {added ?
+                                    null
+                                    :
+                                    <div>
+                                        <div id="gtCalendar" class="calendarContainer">
+                                            <b>Enter date:</b>
+                                            <Calendar
+                                                onChange={this.onDateChange}
+                                                value={date}
+                                            />
+                                        </div>
+                                        <button className="btn btn-primary" onClick={this.handleAddWorkout}>Add workout</button>
+                                    </div>
+                                }
                         </div>
                         }
                     </div>
                 }
-
+                <div className='container'>
                 {
                     this.state.mode === 'gym' &&
-                    <div>
+                        <div>
                         <h5>Add your Gym Session</h5>
-                        Gym page
+                        <div>
+                        <select onChange={this.handleSelectExercise}>
+                            <option value={null}>Choose exercise</option>
+                            {exerciseList.map(exercise =>
+                                <option key={exercise.id} value={JSON.stringify(exercise)}>{exercise.name}</option>
+                            )}
+                        </select>
+                        </div>
+
+                        { exercise !== null &&
+                        <div>
+                        { !added &&
+                            <form onSubmit={this.handleAddSession} onChange={this.handleChangeSession} >
+                                <div id='forms'>
+                                    { isCardio ?
+                                        <div>
+                                            <label>Duration</label>
+                                            <input type="number" name="duration" id='duration' value={session.duration} />
+                                        </div> :
+                                        <div>
+                                            <label>Weight</label>
+                                            <input type="number" name="weight" id="weight" value={session.weight}/>
+                                            <label>Sets</label>
+                                            <input type="number" name="sets" id="sets" value={session.sets}/>
+                                            <label>Reps</label>
+                                            <input type="number" name="reps" id="reps" value={session.reps}/>
+
+                                        </div>
+                                    }
+                                    <button id="addSessBtn" name='weight' onClick={this.handleAddSession}>Add session to workout</button>
+                                </div>
+                                </form>
+                            }
+                                <div id="sessInfo">
+                                    <WorkoutInfo sessions={sessions} date={date} added={added}/>
+                                </div>
+                                { added ?
+                                    null :
+                                    <div>
+                                    <div id="sessCalendar" class="calendarContainer">
+                                        <b>Enter date:</b>
+                                        <Calendar
+                                            onChange={this.onDateChange}
+                                            value={date}
+                                        />
+                                    </div>
+                                    <button id="addWorkoutBtn" onClick={this.handleAddWorkout}>Add workout</button>
+                                    </div>
+                                }
+                        </div>
+                    }
                     </div>
                 }
-
-            </div>
+                </div>
+                </div>
         );
     }
 }

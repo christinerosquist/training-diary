@@ -9,10 +9,10 @@ class FeedPage extends Component {
             <div>
                 <Header/>
                 <div id="navbarDiv">
-                    <Navbar/>
+                    <Navbar userId={this.props.userId} />
                 </div>
                 <div className="container appContainer">
-                    <Feed/>
+                    <Feed handleLogin={this.props.handleLogin} />
                 </div>
             </div>
         );

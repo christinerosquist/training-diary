@@ -9,7 +9,7 @@ class AddWorkoutPage extends Component {
             <div>
                 <Header/>
                 <div id="navbarDiv">
-                    <Navbar/>
+                    <Navbar userId={this.props.userId} />
                 </div>
                 <div className="container appContainer">
                     <AddWorkout/>

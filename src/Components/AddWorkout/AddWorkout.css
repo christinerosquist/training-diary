@@ -1,0 +1,28 @@
+.container {
+    overflow: auto;
+}
+.container input {
+  width: 100%;
+  clear: both;
+}
+
+#forms {
+    width: 50%;
+    margin: auto;
+}
+
+#sessInfo {
+    width: 50%;
+    float: left;
+    margin-top: 30px;
+}
+
+#sessCalendar {
+    width: 50%;
+    float: right;
+    margin-top: 30px;
+}
+
+#addSessBtn {
+    margin-top: 30px;
+}
