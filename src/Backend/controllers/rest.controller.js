@@ -105,10 +105,8 @@ router.get('/getprogress/:id', async function (req, res) {
 
 router.get('/feed', async function (req, res) {
     if(req.session.loggedIn){
-        console.log(req.session.currentUser);
         const workouts = await model.getFeedWorkouts();
         const feedInfo = await model.getFeedInfo(workouts);
-        console.log(feedInfo);
         res.json({
             feedInfo: feedInfo, //Returns array containing information to be posted in feed
         });
@@ -141,13 +139,6 @@ router.get('/testconnection', async function (req, res) {
     else res.json({
         express : "Invalid"
     })
-});
-
-router.post('/addworkout', async function (req, res) {
-    console.log(req.body)
-    const workout = await model.makeWorkout(req.session.currentUser, req.body.group_training, req.body.sessions, req.body.date)
-
-    return res.json({data: workout});
 });
 
 router.get('/validateuser/:email/:password', async function (req, res) {

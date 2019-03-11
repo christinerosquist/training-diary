@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import FeedItem from "./FeedItem";
 import './Feed.css'
 import Redirect from "react-router-dom/es/Redirect";
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:5000');
 
 class Feed extends Component {
     constructor(props) {
@@ -23,19 +25,29 @@ class Feed extends Component {
             })
             .catch(error => console.log(error))
 
+            fetch('/api/feed')
+                .then(res => res.json())
+                .then(data => {
+                    if(data.feedInfo === 'Not logged in'){
+                        this.setState({redirect:true})
+                    }
+                    else{
+                        console.log(data.feedInfo)
+                        this.setState({entries: data.feedInfo})
+                    }
+                })
+                .catch(error => console.log(error))
 
-        fetch('/api/feed')
-            .then(res => res.json())
-            .then(data => {
-                if(data.feedInfo === 'Not logged in'){
-                    this.setState({redirect:true})
-                }
-                else{
-                    console.log(data.feedInfo)
+            // when something related to the feed is changed/added,
+            // update the feed
+            socket.on('updateFeed', () => {
+                fetch('/api/feed')
+                .then(res => res.json())
+                .then(data => {
                     this.setState({entries: data.feedInfo})
-                }
+                })
+                .catch(error => console.log(error))
             })
-            .catch(error => console.log(error))
     }
 
 

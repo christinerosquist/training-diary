@@ -57,8 +57,6 @@ exports.getWorkouts = (user_id) => {
 exports.getAllWorkouts = () => {
     return Workout.findAll()
         .then(workouts => {
-        // console.log("number of workouts: " + workouts.length)
-        // console.log(workouts)
         return workouts
         })
         .catch(error => {console.log(error)})
@@ -221,7 +219,7 @@ exports.addProgress = (user_id, mode, date, data) => {
     }
 }
 
-// create a workout with groupTraining/sessions for a user 
+// create a workout with groupTraining/sessions for a user
 exports.makeWorkout = async (userID, groupTraining, sessions, date) => {
     let type = "Gym Session"
     if(groupTraining !== null) {

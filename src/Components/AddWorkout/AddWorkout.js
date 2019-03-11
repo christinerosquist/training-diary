@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Calendar from "react-calendar";
 import './AddWorkout.css'
 import moment from "moment";
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:5000');
 
 function WorkoutInfo(props) {
     const name = props.name
@@ -48,7 +50,8 @@ class AddWorkout extends Component {
             ...this.getInitialState(),
             mode: 'group',
             exerciseList: [],
-            groupTrainingList: []
+            groupTrainingList: [],
+            currentUser: null
         }
 
         this.onDateChange = this.onDateChange.bind(this)
@@ -73,6 +76,14 @@ class AddWorkout extends Component {
                 })
             })
             .catch(error => console.log(error))
+
+        fetch('/api/getCurrentUser')
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    currentUser: data.user
+                })
+            })
     }
 
     getInitialState() {
@@ -175,26 +186,18 @@ class AddWorkout extends Component {
         this.setState({
             added: true
         })
-        fetch('/api/addworkout', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                sessions: this.state.sessions,
-                group_training: this.state.groupTraining,
-                date: moment(this.state.date).format("YYYY-MM-DD"),
-            })
+
+        // send to socket so that the added workout is displayed immediately
+        socket.emit('addWorkout', {
+            userId: this.state.currentUser.id,
+            sessions: this.state.sessions,
+            group_training: this.state.groupTraining,
+            date: moment(this.state.date).format("YYYY-MM-DD")
         })
-            .then(res => res.json())
-            .then(data => {console.log(data)})
-            .catch(error => console.log(error))
     }
 
     handleNewWorkout(e) {
         e.preventDefault()
-        console.log("new workout")
         this.setState(this.getInitialState())
     }
 
@@ -203,7 +206,6 @@ class AddWorkout extends Component {
         this.setState({
             added: false
         })
-        let clicked = e.target.name
         let newSession = this.state.session
         console.log("add session")
         console.log(newSession)
@@ -280,12 +282,12 @@ class AddWorkout extends Component {
                         <h5>Choose group training</h5>
                         <select defaultValue="Group Training" onChange={this.handleSelectGT}>
                             <option value={null}>Choose group training</option>
-                            {this.state.groupTrainingList.map(gt =>
+                            {groupTrainingList.map(gt =>
                                 <option key={gt.id} value={JSON.stringify(gt)}>{gt.name}</option>
                             )}
                         </select>
                         <br />
-                        {this.state.groupTraining !== null &&
+                        {groupTraining !== null &&
                         <div style={{marginTop: '30px'}}>
                             <WorkoutInfo id="gtInfo" name={groupTraining.name} duration={groupTraining.duration}
                                 calories={groupTraining.calories_per_minute} date={date} added={added}/>
@@ -294,7 +296,7 @@ class AddWorkout extends Component {
                                     null
                                     :
                                     <div>
-                                        <div id="gtCalendar" class="calendarContainer">
+                                        <div id="gtCalendar" className="calendarContainer">
                                             <b>Enter date:</b>
                                             <Calendar
                                                 onChange={this.onDateChange}
@@ -352,7 +354,7 @@ class AddWorkout extends Component {
                                 { added ?
                                     null :
                                     <div>
-                                    <div id="sessCalendar" class="calendarContainer">
+                                    <div id="sessCalendar" className="calendarContainer">
                                         <b>Enter date:</b>
                                         <Calendar
                                             onChange={this.onDateChange}
