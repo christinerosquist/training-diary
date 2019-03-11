@@ -2,6 +2,39 @@ import React, {Component} from 'react'
 import './ProfileHeader.css'
 
 class ProfileHeader extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            userId: '',
+            userInfo: ''
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        fetch('/api/getUserInfo/' + nextProps.userId)
+            .then(res => res.json())
+            .then(data => {
+                if(data.userInfo != 'Not logged in'){
+                    this.setState({userInfo: data.userInfo[0]})
+                }
+            })
+            .catch(error => console.log(error))
+
+        this.setState({userId:nextProps.userId})
+    }
+
+    componentDidMount() {
+        fetch('/api/getUserInfo/' + this.props.userId)
+            .then(res => res.json())
+            .then(data => {
+                if(data.userInfo != 'Not logged in'){
+                    this.setState({userInfo: data.userInfo[0]})
+                }
+            })
+            .catch(error => console.log(error))
+    }
+
     render() {
         return (
             <div className="row no-gutters">
@@ -9,7 +42,7 @@ class ProfileHeader extends Component {
                     <img id="profImg" src={mockData.img} alt="Profile"/>
                 </div>
                 <div className="col-sm-6 col-xs-6" id="rightCol">
-                    <h4>{mockData.user_name}</h4>
+                    <h4>{this.state.userInfo.name}</h4>
                 </div>
 
             </div>

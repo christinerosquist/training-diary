@@ -2,13 +2,54 @@ const model = require("../model.js");
 const express = require('express');
 const router = express.Router();
 
-router.get('/profile/:id', async function (req, res) {
-    const user_id = req.params.id
-    const workouts = await model.getWorkouts(user_id)
+router.get('/getCurrentUser', async function (req, res){
+    if(req.session.loggedIn){ //Om användare är inloggad
+        const userId = req.session.currentUser;
+        var user = await model.getUser(userId);
+        res.json({
+            user: user,
+        })
+    }
+    else{
+        res.json({
+            user: "Not logged in"
+        })
+    }
+})
 
-    res.json({
-        workouts: workouts
-    });
+
+router.get('/getUserInfo/:id', async function (req, res){
+    if(req.session.loggedIn){ //Om användare är inloggad
+        const userId = req.params.id;
+        var userInfo = await model.getUserInfoByUserId(userId);
+        res.json({
+            userInfo: userInfo,
+        })
+    }
+    else{
+        res.json({
+            userInfo: "Not logged in"
+        })
+    }
+})
+
+
+
+router.get('/profile/:id', async function (req, res) {
+    if(req.session.loggedIn){
+        const user_id = req.params.id;
+        const workouts = await model.getWorkouts(user_id)
+
+        res.json({
+            workouts: workouts
+        });
+    }
+    else{
+        res.json({
+            workouts: 'Not logged in'
+        });
+    }
+
 });
 
 router.get('/getsessions/:id', async function (req, res) {
@@ -55,13 +96,21 @@ router.get('/getprogress/:id', async function (req, res) {
 });
 
 router.get('/feed', async function (req, res) {
-    const workouts = await model.getFeedWorkouts();
-    const feedInfo = await model.getFeedInfo(workouts);
-    console.log(feedInfo);
+    if(req.session.loggedIn){
+        console.log(req.session.currentUser);
+        const workouts = await model.getFeedWorkouts();
+        const feedInfo = await model.getFeedInfo(workouts);
+        console.log(feedInfo);
+        res.json({
+            feedInfo: feedInfo, //Returns array containing information to be posted in feed
+        });
+    }
+    else{
+        res.json({
+            feedInfo: "Not logged in"
+        })
+    }
 
-    res.json({
-        feedInfo: feedInfo, //Returns array containing information to be posted in feed
-    });
 });
 
 router.post('/addworkout', async function (req, res) {
@@ -70,17 +119,18 @@ router.post('/addworkout', async function (req, res) {
 });
 
 router.post('/addprogress', async function (req, res) {
-    const user_id = 1; // TEMPORARY VALUE
-    const newprogress = await model.addProgress(user_id, req.body.mode, req.body.date, req.body.data)
+        const userId = req.session.currentUser;
+        const newprogress = await model.addProgress(userId, req.body.mode, req.body.date, req.body.data)
 
-    return res.json({data: newprogress});
+        return res.json({data: newprogress});
+
 });
 
 router.get('/testconnection', async function (req, res) {
     console.log("Got here");
     const users = await model.getUsers();
     const validUser = await model.validateUser(users);
-    if(validUser){ //Gör detta snyggare sen nu bara för test
+    if(validUser){
         res.json({
             express : "Valid"
         })
@@ -94,6 +144,8 @@ router.get('/validateuser/:email/:password', async function (req, res){
     const users = await model.getAllUsers(); //Gets all the users from the db
     const validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
     if(validUser != null){
+        req.session.loggedIn = true;
+        req.session.currentUser = validUser.dataValues.id;
         res.json({
             user : validUser
         })

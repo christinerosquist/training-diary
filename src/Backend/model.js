@@ -101,7 +101,6 @@ exports.getSessions = (workout_id) => {
         .then(workout => {
             return workout.getSessions()
                 .then(sessions => {
-                    console.log("number of sessions: " + sessions.length)
                     console.log(sessions)
                     return sessions
                 })
