@@ -11,7 +11,7 @@ class SearchPage extends Component {
             <div>
                 <Header/>
                 <div id="navbarDiv">
-                    <Navbar userId={this.props.userId} />
+                    <Navbar userId={this.props.userId} handleLogout={this.props.handleLogout}/>
                 </div>
                 <div className="container appContainer">
                     <Search userId={this.props.userId} location={this.props.params}/>

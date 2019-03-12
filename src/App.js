@@ -38,7 +38,7 @@ class App extends Component {
                         <Route path='/profile/:id' render={({location, match}) => <ProfilePage params={match.params} userId={this.state.userId} handleLogout={this.handleLogout} handleLogin={this.handleLogin}/>}/>
                         <Route path='/addworkout' render={(props) => <AddWorkoutPage userId={this.state.userId} handleLogout={this.handleLogout} handleLogin={this.handleLogin}/>}/>
                         <Route path='/addprogress' render={(props) => <AddProgressPage userId={this.state.userId} handleLogout={this.handleLogout} handleLogin={this.handleLogin}/>}/>
-                        <Route exact path='/search/:searchValue' render={(props) => <SearchPage userId={this.state.userId}/>}/>
+                        <Route exact path='/search/:searchValue' render={(props) => <SearchPage  handleLogout={this.handleLogout} userId={this.state.userId}/>}/>
                     </Switch>
                 </BrowserRouter>
             </div>
