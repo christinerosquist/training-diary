@@ -13,7 +13,10 @@ class Navbar extends Component {
             }
         })
             .then(res => res.json())
-            .then(() => this.props.handleLogout()) // set userId to '' in App, so that all pages will be redirected when not logged in
+            .then(() => {
+                this.props.handleLogout()
+                console.log("Changed to '' ")
+            }) // set userId to '' in App, so that all pages will be redirected when not logged in
             .catch()
         return "/"
     }

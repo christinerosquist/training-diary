@@ -5,6 +5,16 @@ import AddWorkout from "../../Components/AddWorkout/AddWorkout";
 import {Redirect} from "react-router-dom";
 
 class AddWorkoutPage extends Component {
+
+    componentDidMount() {
+        fetch('/api/getCurrentUser')
+            .then(res => res.json())
+            .then(data => {
+                this.props.handleLogin(data.user_id) // either userId or ''
+            })
+            .catch(error => console.log(error))
+    }
+
     render() {
         if (this.props.userId === '') {
             return <Redirect to='/'/>

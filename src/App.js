@@ -18,10 +18,6 @@ class App extends Component {
         }
     }
 
-    componentDidMount() {
-       console.log("app mounted")
-    }
-
     handleLogin = (userId) => {
         this.setState({userId:userId})
     }
@@ -37,10 +33,10 @@ class App extends Component {
                     <Switch>
                         <Route exact path='/' render={(props) => <LoginPage handleLogin={this.handleLogin}/>}/>
                         <Route path='/createuser' render={() => <CreateUserPage />}/>
-                        <Route path='/feed' render={() => <FeedPage userId={this.state.userId} handleLogout={this.handleLogout} />}/>
-                        <Route path='/profile/:id' render={({location, match}) => <ProfilePage params={match.params} userId={this.state.userId} handleLogout={this.handleLogout}/>}/>
-                        <Route path='/addworkout' render={(props) => <AddWorkoutPage userId={this.state.userId} handleLogout={this.handleLogout}/>}/>
-                        <Route path='/addprogress' render={(props) => <AddProgressPage userId={this.state.userId} handleLogout={this.handleLogout}/>}/>
+                        <Route path='/feed' render={() => <FeedPage userId={this.state.userId} handleLogout={this.handleLogout} handleLogin={this.handleLogin}/>}/>
+                        <Route path='/profile/:id' render={({location, match}) => <ProfilePage params={match.params} userId={this.state.userId} handleLogout={this.handleLogout} handleLogin={this.handleLogin}/>}/>
+                        <Route path='/addworkout' render={(props) => <AddWorkoutPage userId={this.state.userId} handleLogout={this.handleLogout} handleLogin={this.handleLogin}/>}/>
+                        <Route path='/addprogress' render={(props) => <AddProgressPage userId={this.state.userId} handleLogout={this.handleLogout} handleLogin={this.handleLogin}/>}/>
                     </Switch>
                 </BrowserRouter>
             </div>
