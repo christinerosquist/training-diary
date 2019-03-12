@@ -15,7 +15,6 @@ class Progress extends Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({ready: false, userId: nextProps.userId})
-        console.log(nextProps.userId)
         this.updateData(nextProps.userId, false)
     }
 

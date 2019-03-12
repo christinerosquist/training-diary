@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 
 class Navbar extends Component {
 
-    logOut(){
+    logOut = () => {
         fetch('/api/logOut', {
             method: 'POST',
             headers: {
@@ -13,7 +13,7 @@ class Navbar extends Component {
             }
         })
             .then(res => res.json())
-            .then()
+            .then(() => this.props.handleLogout()) // set userId to '' in App, so that all pages will be redirected when not logged in
             .catch()
         return "/"
     }

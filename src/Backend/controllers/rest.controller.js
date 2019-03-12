@@ -17,7 +17,6 @@ router.get('/getCurrentUser', async function (req, res){
     }
 })
 
-
 router.get('/getUserInfo/:id', async function (req, res){
     if(req.session.loggedIn){ //Om användare är inloggad
         const userId = req.params.id;
@@ -36,26 +35,17 @@ router.get('/getUserInfo/:id', async function (req, res){
 router.post('/logOut', async function (req, res) {
     req.session.destroy();
     return res.json({data: "loggedOut"});
-
 });
 
 
 
 router.get('/profile/:id', async function (req, res) {
-    if(req.session.loggedIn){
-        const user_id = req.params.id;
-        const workouts = await model.getWorkouts(user_id)
+    const user_id = req.params.id;
+    const workouts = await model.getWorkouts(user_id)
 
-        res.json({
-            workouts: workouts
-        });
-    }
-    else{
-        res.json({
-            workouts: 'Not logged in'
-        });
-    }
-
+    res.json({
+        workouts: workouts
+    })
 });
 
 router.get('/getsessions/:id', async function (req, res) {
@@ -100,26 +90,24 @@ router.get('/getprogress/:id', async function (req, res) {
 });
 
 router.get('/feed', async function (req, res) {
-    if(req.session.loggedIn){
-        const workouts = await model.getFeedWorkouts();
-        const feedInfo = await model.getFeedInfo(workouts);
-        res.json({
-            feedInfo: feedInfo, //Returns array containing information to be posted in feed
-        });
-    }
-    else{
-        res.json({
-            feedInfo: "Not logged in"
-        })
-    }
+    const workouts = await model.getFeedWorkouts();
+    const feedInfo = await model.getFeedInfo(workouts);
+    res.json({
+        feedInfo: feedInfo, //Returns array containing information to be posted in feed
+    });
 
 });
 
 router.post('/addprogress', async function (req, res) {
+    if(req.session.loggedIn) {
         const userId = req.session.currentUser;
         const newprogress = await model.addProgress(userId, req.body.mode, req.body.date, req.body.data)
-
         return res.json({data: newprogress});
+    } else {
+        res.json({
+            data: "Not logged in"
+        })
+    }
 
 });
 
@@ -137,9 +125,12 @@ router.get('/testconnection', async function (req, res) {
 });
 
 router.post('/addworkout', async function (req, res) {
-    const workout = await model.makeWorkout(req.session.currentUser, req.body.group_training, req.body.sessions, req.body.date)
-
-    return res.json({data: workout});
+    if(req.session.loggedIn) {
+        const workout = await model.makeWorkout(req.session.currentUser, req.body.group_training, req.body.sessions, req.body.date)
+        return res.json({data: workout});
+    } else {
+        res.json({data: "Not logged in"})
+    }
 });
 
 router.post('/validateuser', async function (req, res) {

@@ -14,35 +14,20 @@ class Feed extends Component {
     }
 
     componentDidMount() {
-        fetch('/api/getCurrentUser')
-            .then(res => res.json())
-            .then(data => {
-                if(data.user !== 'Not logged in'){
-                    this.props.handleLogin(data.user.id);
-                }
-            })
-            .catch(error => console.log(error))
+        this.getEntries()
+    }
 
-
+    getEntries() {
         fetch('/api/feed')
             .then(res => res.json())
             .then(data => {
-                if(data.feedInfo === 'Not logged in'){
-                    this.setState({redirect:true})
-                }
-                else{
-                    this.setState({entries: data.feedInfo})
-                }
+                this.setState({entries: data.feedInfo})
             })
             .catch(error => console.log(error))
     }
 
 
     render() {
-        if (this.state.redirect) {
-            this.setState({redirect:false})
-            return <Redirect to='/'/>;
-        }
         return (
             <div className="feed">
                 <h3 id="feedtitle">Latest workouts</h3>
