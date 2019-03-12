@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './Diary.css'
+import Redirect from "react-router-dom/es/Redirect";
 
 class Diary extends Component {
     constructor(props) {
