@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Navbar.css'
-import {Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import Redirect from "react-router-dom/es/Redirect";
 
 class Navbar extends Component {
@@ -29,8 +29,8 @@ class Navbar extends Component {
         fetch('/api/search/' + searchValue)
             .then(res => res.json())
             .then(data => {
-                console.log("Searched for: " + data.users[0].userInfo.name)
-                this.setState({searchRes: data.users, search:true})
+               this.setState({searchRes: data.users, search:true})
+                this.props.history.push({pathname:'/search/' + this.state.searchValue, state: {searchRes: this.state.searchRes}});
             })
             .catch(error => console.log(error))
 
@@ -63,9 +63,6 @@ class Navbar extends Component {
 
     render() {
         console.log(this.props.userId)
-        if(this.state.search){
-            return <Redirect to={{ pathname:'/search', state: {searchRes: this.state.searchRes}}}/>;
-        }
 
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -101,4 +98,5 @@ class Navbar extends Component {
 
 Navbar.propTypes = {};
 
-export default Navbar;
+export default withRouter(Navbar)
+

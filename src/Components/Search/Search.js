@@ -28,12 +28,22 @@ class Search extends Component {
 
     render() {
         console.log(this.props.location.state.searchRes)
-        return (
-            <div className="search">
-                <h3 id="searchTitle">Search result</h3>
-                {this.props.location.state.searchRes.map((searchRes) => <SearchItem ownProfile = {this.props.userId} searchRes={searchRes} key={searchRes.user.id}/>)}
-            </div>
-        );
+        if(this.props.location.state.searchRes.length === 0){
+            return (
+                <div className="search">
+                    <h3 id="searchTitle">Search result</h3>
+                    <p style={{textAlign:'center'}}>No users found</p>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div className="search">
+                    <h3 id="searchTitle">Search result</h3>
+                    {this.props.location.state.searchRes.map((searchRes) => <SearchItem ownProfile = {this.props.userId} searchRes={searchRes} key={searchRes.user.id}/>)}
+                </div>
+            );
+        }
     }
 }
 

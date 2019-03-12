@@ -42,7 +42,7 @@ class App extends Component {
                         <Route path='/profile/:id' render={({location, match}) => <ProfilePage params={match.params} userId={this.state.userId}/>}/>
                         <Route path='/addworkout' render={(props) => <AddWorkoutPage userId={this.state.userId}/>}/>
                         <Route path='/addprogress' render={(props) => <AddProgressPage userId={this.state.userId}/>}/>
-                        <Route path='/search' render={(props) => <SearchPage userId={this.state.userId}/>}/>
+                        <Route exact path='/search/:searchValue' render={(props) => <SearchPage userId={this.state.userId}/>}/>
                     </Switch>
                 </BrowserRouter>
             </div>

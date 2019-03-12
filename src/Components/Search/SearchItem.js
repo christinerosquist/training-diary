@@ -6,7 +6,7 @@ import './SearchItem.css'
 class SearchItem extends Component {
 
     render() {
-        const {ownProfile, user, userInfo} = this.props.searchRes;
+        const {user, userInfo} = this.props.searchRes;
         console.log("GOT TO SEARCH ITEM")
         console.log(this.props.searchRes)
         console.log(user)
