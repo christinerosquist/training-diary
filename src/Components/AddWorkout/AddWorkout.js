@@ -351,6 +351,7 @@ class AddWorkout extends Component {
                                         <Calendar
                                             onChange={this.onDateChange}
                                             value={date}
+                                            maxDate={new Date()}
                                         />
                                     </div>
                                     <button id="addWorkoutBtn" onClick={this.handleAddWorkout}>Add workout</button>
