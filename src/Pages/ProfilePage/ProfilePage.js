@@ -4,12 +4,14 @@ import Navbar from "../../Components/Navbar/Navbar";
 import ProfileHeader from "../../Components/ProfileHeader/ProfileHeader";
 import Progress from "../../Components/Progress/Progress";
 import Diary from "../../Components/Diary/Diary";
+import {Redirect} from "react-router-dom";
 
 class ProfilePage extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            redirect: false,
             id : this.props.params.id,
         }
     }
@@ -23,12 +25,14 @@ class ProfilePage extends Component {
     }
 
     render() {
-        console.log("User id is now: " + this.state.id);
+        if (this.props.userId === '') {
+            return <Redirect to='/'/>
+        }
         return (
             <div>
                 <Header/>
                 <div id="navbarDiv">
-                    <Navbar userId={this.props.userId}/>
+                    <Navbar userId={this.props.userId} handleLogout={this.props.handleLogout}/>
                 </div>
                 <div className="container appContainer">
                     <ProfileHeader userId={this.state.id}/>

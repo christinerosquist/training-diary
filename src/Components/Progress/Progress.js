@@ -8,17 +8,23 @@ class Progress extends Component {
         this.state = {
             ready: false,
             muscledata: null,
-            weightdata: null
+            weightdata: null,
+            userId: this.props.userId
         }
     }
 
-    componentDidMount() {
-        if(this.state.ready === false) { // lägg till så att den uppdateras även ifall man går in på annan användare
+    componentWillReceiveProps(nextProps) {
+        this.setState({ready: false, userId: nextProps.userId})
+        this.updateData(nextProps.userId, false)
+    }
+
+    updateData(id, bool) {
+        if(bool === false) {
             mlabels.length = 0
             mdatasets[0].data.length = 0
             wlabels.length = 0
             wdatasets[0].data.length = 0
-            fetch('/api/getprogress/' + this.props.userId)
+            fetch('/api/getprogress/' + id)
                 .then(res => res.json())
                 .then(data => {
                     data.muscledata.forEach(muscledata => {
@@ -43,7 +49,6 @@ class Progress extends Component {
 
     render() {
 
-        console.log(this.props.userId)
         return (
             <div className="row no-gutters">
                 <div className="col-sm-6 col-xs-6">

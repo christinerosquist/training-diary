@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Calendar from "react-calendar";
 import './AddWorkout.css'
 import moment from "moment";
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:5000');
 
 function WorkoutInfo(props) {
     const name = props.name
@@ -45,10 +47,11 @@ class AddWorkout extends Component {
         super(props)
 
         this.state = {
-            ...this.getInitialState(),
+            ...this.getStartStates(),
             mode: 'group',
             exerciseList: [],
-            groupTrainingList: []
+            groupTrainingList: [],
+            currentUser: null
         }
 
         this.onDateChange = this.onDateChange.bind(this)
@@ -66,16 +69,23 @@ class AddWorkout extends Component {
         fetch('/api/getgrouptrainings')
             .then(res => res.json())
             .then(data => {
-                console.log(data.group_trainings)
                 this.setState({
                     groupTrainingList: data.group_trainings,
                     exerciseList: data.exercises
                 })
             })
             .catch(error => console.log(error))
+
+        fetch('/api/getCurrentUser')
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    currentUser: data.user
+                })
+            })
     }
 
-    getInitialState() {
+    getStartStates() {
         return {
             groupTraining: null,
             exercise: null,
@@ -97,8 +107,7 @@ class AddWorkout extends Component {
 
     setGroupMode() {
         if(this.state.added) {
-            console.log("reset state")
-            this.setState(this.getInitialState())
+            this.setState(this.getStartStates())
         }
         this.setState({
             mode: 'group',
@@ -112,9 +121,8 @@ class AddWorkout extends Component {
 
     setGymMode() {
         if(this.state.added) {
-            console.log("reset state")
             this.setState({
-                ...this.getInitialState(),
+                ...this.getStartStates(),
                 mode: 'gym'
             })
         } else {
@@ -128,10 +136,7 @@ class AddWorkout extends Component {
     }
 
     handleChangeSession(e) {
-        console.log('change session')
-
         let changed = e.target
-        console.log(changed.name)
         switch(changed.name) {
             case 'duration':
                 this.setState({
@@ -171,31 +176,22 @@ class AddWorkout extends Component {
 
     handleAddWorkout(e) {
         e.preventDefault()
-        console.log("add workout")
         this.setState({
             added: true
         })
-        fetch('/api/addworkout', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                sessions: this.state.sessions,
-                group_training: this.state.groupTraining,
-                date: moment(this.state.date).format("YYYY-MM-DD"),
-            })
+
+        // send to socket so that the added workout is displayed immediately
+        socket.emit('addWorkout', {
+            userId: this.state.currentUser.id,
+            sessions: this.state.sessions,
+            group_training: this.state.groupTraining,
+            date: moment(this.state.date).format("YYYY-MM-DD")
         })
-            .then(res => res.json())
-            .then(data => {console.log(data)})
-            .catch(error => console.log(error))
     }
 
     handleNewWorkout(e) {
         e.preventDefault()
-        console.log("new workout")
-        this.setState(this.getInitialState())
+        this.setState(this.getStartStates())
     }
 
     handleAddSession(e) {
@@ -203,10 +199,7 @@ class AddWorkout extends Component {
         this.setState({
             added: false
         })
-        let clicked = e.target.name
         let newSession = this.state.session
-        console.log("add session")
-        console.log(newSession)
         this.setState(prevState => ({
             sessions: [...prevState.sessions, newSession]
         }))
@@ -239,7 +232,7 @@ class AddWorkout extends Component {
                 exercise = JSON.parse(selected)
             }
             this.setState({
-                ...this.getInitialState(),
+                ...this.getStartStates(),
                 exercise: exercise
             })
         }
@@ -280,12 +273,12 @@ class AddWorkout extends Component {
                         <h5>Choose group training</h5>
                         <select defaultValue="Group Training" onChange={this.handleSelectGT}>
                             <option value={null}>Choose group training</option>
-                            {this.state.groupTrainingList.map(gt =>
+                            {groupTrainingList.map(gt =>
                                 <option key={gt.id} value={JSON.stringify(gt)}>{gt.name}</option>
                             )}
                         </select>
                         <br />
-                        {this.state.groupTraining !== null &&
+                        {groupTraining !== null &&
                         <div style={{marginTop: '30px'}}>
                             <WorkoutInfo id="gtInfo" name={groupTraining.name} duration={groupTraining.duration}
                                 calories={groupTraining.calories_per_minute} date={date} added={added}/>
@@ -294,11 +287,12 @@ class AddWorkout extends Component {
                                     null
                                     :
                                     <div>
-                                        <div id="gtCalendar" class="calendarContainer">
+                                        <div id="gtCalendar" className="calendarContainer">
                                             <b>Enter date:</b>
                                             <Calendar
                                                 onChange={this.onDateChange}
                                                 value={date}
+                                                maxDate={new Date()}
                                             />
                                         </div>
                                         <button className="btn btn-primary" onClick={this.handleAddWorkout}>Add workout</button>
@@ -352,7 +346,7 @@ class AddWorkout extends Component {
                                 { added ?
                                     null :
                                     <div>
-                                    <div id="sessCalendar" class="calendarContainer">
+                                    <div id="sessCalendar" className="calendarContainer">
                                         <b>Enter date:</b>
                                         <Calendar
                                             onChange={this.onDateChange}

@@ -7,7 +7,7 @@ router.get('/getCurrentUser', async function (req, res){
         const userId = req.session.currentUser;
         var user = await model.getUser(userId);
         res.json({
-            user: user,
+            user: user
         })
     }
     else{
@@ -16,7 +16,6 @@ router.get('/getCurrentUser', async function (req, res){
         })
     }
 })
-
 
 router.get('/getUserInfo/:id', async function (req, res){
     if(req.session.loggedIn){ //Om användare är inloggad
@@ -36,35 +35,23 @@ router.get('/getUserInfo/:id', async function (req, res){
 router.post('/logOut', async function (req, res) {
     req.session.destroy();
     return res.json({data: "loggedOut"});
-
 });
 
 
 
 router.get('/profile/:id', async function (req, res) {
-    if(req.session.loggedIn){
-        const user_id = req.params.id;
-        const workouts = await model.getWorkouts(user_id)
+    const user_id = req.params.id;
+    const workouts = await model.getWorkouts(user_id)
 
-        res.json({
-            workouts: workouts
-        });
-    }
-    else{
-        res.json({
-            workouts: 'Not logged in'
-        });
-    }
-
+    res.json({
+        workouts: workouts
+    })
 });
 
 router.get('/getsessions/:id', async function (req, res) {
-    console.log("got here haha")
     const workout_id = req.params.id
     const sessions = await model.getSessions(workout_id);
     const exercises = await model.getExercises(sessions);
-    console.log(exercises);
-    console.log(sessions);
 
     res.json({
         sessions: sessions,
@@ -82,7 +69,6 @@ router.get('/getgrouptraining/:id', async function (req, res) {
 });
 
 router.get('/getgrouptrainings', async function (req, res) {
-    console.log("ggt")
     const group_trainings = await model.getAllGroupTrainings()
     const exercises = await model.getAllExercises()
 
@@ -113,34 +99,29 @@ router.get('/getprogress/:id', async function (req, res) {
 });
 
 router.get('/feed', async function (req, res) {
-    if(req.session.loggedIn){
-        console.log(req.session.currentUser);
-        const workouts = await model.getFeedWorkouts();
-        const feedInfo = await model.getFeedInfo(workouts);
-        console.log(feedInfo);
+    const workouts = await model.getFeedWorkouts();
+    const feedInfo = await model.getFeedInfo(workouts);
+    res.json({
+        feedInfo: feedInfo, //Returns array containing information to be posted in feed
+    });
+
+});
+
+router.post('/addprogress', async function (req, res) {
+    if(req.session.loggedIn) {
+        const userId = req.session.currentUser;
+        const newprogress = await model.addProgress(userId, req.body.mode, req.body.date, req.body.data)
+        return res.json({data: newprogress});
+    } else {
         res.json({
-            feedInfo: feedInfo, //Returns array containing information to be posted in feed
-        });
-    }
-    else{
-        res.json({
-            feedInfo: "Not logged in"
+            data: "Not logged in"
         })
     }
 
 });
 
-router.post('/addprogress', async function (req, res) {
-        const userId = req.session.currentUser;
-        const newprogress = await model.addProgress(userId, req.body.mode, req.body.date, req.body.data)
-
-        return res.json({data: newprogress});
-
-});
-
 router.get('/testconnection', async function (req, res) {
-    console.log("Got here");
-    const users = await model.getAllUsers();
+    const users = await model.getUsers();
     const validUser = await model.validateUser(users);
     if(validUser){
         res.json({
@@ -153,15 +134,17 @@ router.get('/testconnection', async function (req, res) {
 });
 
 router.post('/addworkout', async function (req, res) {
-    console.log(req.body)
-    const workout = await model.makeWorkout(req.session.currentUser, req.body.group_training, req.body.sessions, req.body.date)
-
-    return res.json({data: workout});
+    if(req.session.loggedIn) {
+        const workout = await model.makeWorkout(req.session.currentUser, req.body.group_training, req.body.sessions, req.body.date)
+        return res.json({data: workout});
+    } else {
+        res.json({data: "Not logged in"})
+    }
 });
 
-router.get('/validateuser/:email/:password', async function (req, res) {
+router.post('/validateuser', async function (req, res) {
     var users = await model.getAllUsers(); //Gets all the users from the db
-    var validUser = await model.validateUser(users, req.params.email, req.params.password); //Function that the user if its valid
+    var validUser = await model.validateUser(users, req.body.email, req.body.password); //Function that the user if its valid
     if(validUser != null){
         req.session.loggedIn = true;
         req.session.currentUser = validUser.dataValues.id;

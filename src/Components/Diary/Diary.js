@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './Diary.css'
-import Redirect from "react-router-dom/es/Redirect";
 
 class Diary extends Component {
     constructor(props) {
@@ -19,28 +18,17 @@ class Diary extends Component {
         this.getDiary(nextProps.userId);
     }
 
-    componentDidMount() {
-        this.getDiary(this.props.userId);
-    }
-
     getDiary(userId){
         fetch('/api/profile/' + userId)
             .then(res => res.json())
             .then(data => {
-                if(data.workouts === "Not logged in"){
-                    this.setState({redirect:true})
-                }
-                else{
-                    this.setState({workouts: data.workouts, ready: true})
-                }
+                this.setState({workouts: data.workouts, ready: true})
             })
             .catch(error => console.log(error))
     }
 
     handleClick(workout_id, workout_type, group_training_id) {
-        console.log(workout_type)
         if(this.state[workout_id] === undefined) {
-            console.log("I don't have any saved data, so lets get some!")
 
             if (workout_type === 'Gym Session') {
 

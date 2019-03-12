@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {BrowserRouter, Route, Switch} from 'react-router-dom'
+import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom'
 import './App.css'
 import LoginPage from "./Pages/LoginPage/LoginPage"
 import FeedPage from "./Pages/FeedPage/FeedPage"
@@ -10,29 +10,25 @@ import CreateUserPage from "./Pages/LoginPage/CreateUserPage";
 import SearchPage from "./Pages/SearchPage/SearchPage";
 
 class App extends Component {
-    state = {
-        data: null,
-        userId: ''
+    constructor() {
+        super()
+
+        this.state = {
+            data: null,
+            userId: '',
+        }
     }
 
     componentDidMount() {
-
+       console.log("app mounted")
     }
 
     handleLogin = (userId) => {
-        console.log("Handle login: ", userId)
         this.setState({userId:userId})
-        console.log(this.state.userId)
     }
 
-    callBackendAPI = async () => {
-        const response = await fetch('/api/testconnection')
-        const body = await response.json()
-
-        if(response.status !== 200){
-            throw Error(body.message)
-        }
-        return body
+    handleLogout = () => {
+        this.setState({userId: ''})
     }
 
     render() {
@@ -40,7 +36,7 @@ class App extends Component {
             <div className="App">
                 <BrowserRouter>
                     <Switch>
-                        <Route exact path='/' render={(props) => <LoginPage/>}/>
+                        <Route exact path='/' render={(props) => <LoginPage handleLogin={this.handleLogin}/>}/>
                         <Route path='/createuser' render={() => <CreateUserPage />}/>
                         <Route path='/feed' render={() => <FeedPage userId={this.state.userId} handleLogin={this.handleLogin} />}/>
                         <Route path='/profile/:id' render={({location, match}) => <ProfilePage params={match.params} userId={this.state.userId}/>}/>
