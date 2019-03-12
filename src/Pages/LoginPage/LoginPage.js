@@ -12,13 +12,13 @@ class LoginPage extends Component {
     }
 
     componentDidMount() {
-        console.log("loginpage mount")
         fetch('/api/getCurrentUser')
             .then(res => res.json())
             .then(data => {
-                if(data.user !== 'Not logged in'){ // if logged in, redirect user to feed
-                    this.props.handleLogin(data.user.id)
-                    this.setState({redirect:true})
+                if(data.user_id !== ''){ // if logged in, redirect user to feed
+                    console.log(data.user_id)
+                    this.props.handleLogin(data.user_id)
+                    this.setState({ redirect:true })
                 }
             })
             .catch(error => console.log(error))
@@ -27,13 +27,12 @@ class LoginPage extends Component {
     render() {
         if (this.state.redirect) {
             return <Redirect to='/feed'/>
-        } else {
-            return (
-                <div>
-                    <Login handleLogin={this.props.handleLogin}/>
-                </div>
-            );
         }
+        return (
+            <div>
+                <Login handleLogin={this.props.handleLogin}/>
+            </div>
+        );
     }
 }
 export default LoginPage;

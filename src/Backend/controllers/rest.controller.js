@@ -3,16 +3,17 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/getCurrentUser', async function (req, res){
-    if(req.session.loggedIn){ //Om användare är inloggad
+    if(req.session.loggedIn) { //Om användare är inloggad
         const userId = req.session.currentUser;
-        var user = await model.getUser(userId);
+        const user = await model.getUser(userId);
+        console.log(user)
         res.json({
-            user: user
+            user_id: user.id
         })
     }
-    else{
+    else {
         res.json({
-            user: "Not logged in"
+            user_id: ''
         })
     }
 })

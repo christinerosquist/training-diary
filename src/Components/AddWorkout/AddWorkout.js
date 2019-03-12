@@ -80,7 +80,7 @@ class AddWorkout extends Component {
             .then(res => res.json())
             .then(data => {
                 this.setState({
-                    currentUser: data.user
+                    currentUser: data.user_id
                 })
             })
     }
@@ -182,7 +182,7 @@ class AddWorkout extends Component {
 
         // send to socket so that the added workout is displayed immediately
         socket.emit('addWorkout', {
-            userId: this.state.currentUser.id,
+            userId: this.state.currentUser,
             sessions: this.state.sessions,
             group_training: this.state.groupTraining,
             date: moment(this.state.date).format("YYYY-MM-DD")
@@ -351,6 +351,7 @@ class AddWorkout extends Component {
                                         <Calendar
                                             onChange={this.onDateChange}
                                             value={date}
+                                            maxDate={new Date()}
                                         />
                                     </div>
                                     <button id="addWorkoutBtn" onClick={this.handleAddWorkout}>Add workout</button>

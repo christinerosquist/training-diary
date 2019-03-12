@@ -274,6 +274,19 @@ exports.makeWorkout = async (userID, groupTraining, sessions, date) => {
     }
 }
 
+exports.upvoteWorkout = async (workoutId) => {
+    const workout = await Workout.findByPk(workoutId)
+    const newUpvotes = workout.likes + 1
+    return workout.update({
+        likes: newUpvotes
+    })
+        .then(updatedInst => {
+            console.log('updated: ')
+            console.log(updatedInst)
+            return updatedInst
+        })
+}
+
 exports.createExercise = (name, caloriesUpon, calories) => {
     return Exercise.create({
         name: name,
