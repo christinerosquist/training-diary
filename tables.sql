@@ -63,8 +63,8 @@ group_training_id varchar(36),
 type varchar(64),
 date date,
 likes int,
-created_at date,
-updated_at date
+created_at datetime,
+updated_at datetime
 );
 
 insert into workout values("1","1", null, 'Gym Session','2019-03-05', 3, null, null);
