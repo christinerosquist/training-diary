@@ -63,7 +63,7 @@ class Diary extends Component {
             return exercise.calories * session.reps;
         }
         else{ //Else är bara duration?
-            return exercise.calories * session.reps;
+            return exercise.calories * session.duration;
         }
     }
 
@@ -72,6 +72,13 @@ class Diary extends Component {
             return duration + " minutes"
         }
         else return "-"
+    }
+
+    handleWeight(weight){
+        if(weight!=null){
+            return weight + " kg"
+        }
+        else return ""
     }
 
     render() {
@@ -109,7 +116,7 @@ class Diary extends Component {
                                         {this.state[workout.id].mapping.map((mapping) => <div>
                                             <b>Exercise:</b> {mapping.exercise.name}
                                             <br />
-                                            <b>Weight:</b> {mapping.session.weight + ' kg'}
+                                            <b>Weight:</b> {this.handleWeight(mapping.session.weight)}
                                             <br />
                                             <b>Sets:</b> {mapping.session.sets}
                                             <br />
