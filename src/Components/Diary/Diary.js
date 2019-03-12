@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './Diary.css'
+import Redirect from "react-router-dom/es/Redirect";
 
 class Diary extends Component {
     constructor(props) {
@@ -74,6 +75,10 @@ class Diary extends Component {
     }
 
     render() {
+        if (this.state.redirect) {
+            this.setState({redirect:false})
+            return <Redirect to='/'/>;
+        }
         return (
             <div className="container" id="diaryContainer">
                 <h3>Training Diary</h3>

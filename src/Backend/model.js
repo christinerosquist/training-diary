@@ -78,6 +78,28 @@ exports.getUser = (userID) => {
         .catch(error => {console.log(error)})
 }
 
+exports.getUserInfosBySearch = (searchVal) => {
+    return UserInfo.findAll({
+        where:{
+            name : sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + searchVal + '%')
+        }
+    }).then(userInfos => {
+        return userInfos
+        })
+        .catch(error => {console.log(error)})
+}
+
+exports.getUsersBySearch = async (userInfos) => {
+    var users = [];
+    for(var i = 0; i<userInfos.length; i++ ){
+        var userId = userInfos[i].dataValues.user_id;
+        var user = await this.getUser(userId);
+        var arrayObject = {user: user, userInfo: userInfos[i]}
+        users.push(arrayObject);
+    }
+   return users;
+}
+
 exports.getAllGroupTrainings = () => {
     return GroupTraining.findAll()
         .then(gts => {

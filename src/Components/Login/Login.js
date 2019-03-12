@@ -47,7 +47,7 @@ class Login extends Component {
                     this.setState({wrongPassword:true});
                 }
             })
-            .catch(e => console.log(e))
+            .catch(err => console.log(err))
     }
 
     handleEmail(event) {
