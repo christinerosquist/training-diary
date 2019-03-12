@@ -16,35 +16,10 @@ class Feed extends Component {
     }
 
     componentDidMount() {
-<<<<<<< HEAD
-        this.getEntries()
-    }
-
-    getEntries() {
-        fetch('/api/feed')
-            .then(res => res.json())
-            .then(data => {
-                this.setState({entries: data.feedInfo})
-=======
-        fetch('/api/getCurrentUser')
-            .then(res => res.json())
-            .then(data => {
-                if(data.user !== 'Not logged in'){
-                    this.props.handleLogin(data.user.id);
-                }
-            })
-            .catch(error => console.log(error))
-
             fetch('/api/feed')
                 .then(res => res.json())
                 .then(data => {
-                    if(data.feedInfo === 'Not logged in'){
-                        this.setState({redirect:true})
-                    }
-                    else{
-                        console.log(data.feedInfo)
-                        this.setState({entries: data.feedInfo})
-                    }
+                    this.setState({entries: data.feedInfo})
                 })
                 .catch(error => console.log(error))
 
@@ -57,7 +32,6 @@ class Feed extends Component {
                     this.setState({entries: data.feedInfo})
                 })
                 .catch(error => console.log(error))
->>>>>>> 48359822cdb3fe94ca3480811996bdbfc87d2355
             })
     }
 
