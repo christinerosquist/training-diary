@@ -47,7 +47,7 @@ exports.getUserInfoByUserId = (userId) => {
 exports.getWorkouts = (user_id) => {
     return User.findByPk(user_id) // user1
         .then(user => {
-            return user.getSeqWorkouts()
+            return user.getSeqWorkouts({order: [['date', 'DESC']]})
                 .then(workouts => {
                     return workouts
                 })
@@ -158,7 +158,7 @@ exports.getAllExercises = () => {
 
 // Get the 5 latest workouts that has been added
 exports.getFeedWorkouts = () => {
-    return Workout.findAll({limit: 5, order: [['date', 'DESC']]})
+    return Workout.findAll({limit: 5, order: [['created_at', 'DESC']]})
         .then(workouts => {return workouts})
         .catch(error => console.log(error))
 }

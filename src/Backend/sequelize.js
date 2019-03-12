@@ -89,7 +89,6 @@ module.exports = () => {
             type: Sequelize.INTEGER
         }
     }, {
-        timestamps: false,
         underscored: true,
         freezeTableName: true
     });

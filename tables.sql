@@ -62,12 +62,14 @@ user_id varchar(36),
 group_training_id varchar(36),
 type varchar(64),
 date date,
-likes int
+likes int,
+created_at date,
+updated_at date
 );
 
-insert into workout values("1","1", null, 'Gym Session','2019-03-05', 3);
-insert into workout values("2","1", "1", 'Group Training','2019-03-06', 10);
-insert into workout values("3","1", "2", 'Group Training','2019-03-05', 4);
+insert into workout values("1","1", null, 'Gym Session','2019-03-05', 3, null, null);
+insert into workout values("2","1", "1", 'Group Training','2019-03-06', 10, null, null);
+insert into workout values("3","1", "2", 'Group Training','2019-03-05', 4, null, null);
 
 create table session (
 id varchar(36) NOT NULL,
