@@ -92,6 +92,15 @@ router.get('/getgrouptrainings', async function (req, res) {
     })
 });
 
+router.get('/search/:searchValue', async function (req, res) {
+    const userInfos = await model.getUserInfosBySearch(req.params.searchValue);
+    const users = await model.getUsersBySearch(userInfos);
+    console.log(users)
+    res.json({
+        users: users, //Returerar en lista med user + dess info
+    })
+});
+
 router.get('/getprogress/:id', async function (req, res) {
     const user_id = req.params.id
     const muscledata = await model.getMuscleProgress(user_id)

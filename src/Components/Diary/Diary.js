@@ -90,7 +90,6 @@ class Diary extends Component {
             this.setState({redirect:false})
             return <Redirect to='/'/>;
         }
-
         return (
             <div className="container" id="diaryContainer">
                 <h3>Training Diary</h3>
