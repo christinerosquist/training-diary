@@ -215,7 +215,7 @@ exports.addProgress = (user_id, mode, date, data) => {
     }
 }
 
-// create a workout with groupTraining/sessions for a user 
+// create a workout with groupTraining/sessions for a user
 exports.makeWorkout = async (userID, groupTraining, sessions, date) => {
     let type = "Gym Session"
     if(groupTraining !== null) {
