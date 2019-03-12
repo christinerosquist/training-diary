@@ -23,12 +23,7 @@ class Diary extends Component {
         fetch('/api/profile/' + userId)
             .then(res => res.json())
             .then(data => {
-                if(data.workouts === "Not logged in"){
-                    this.setState({redirect:true})
-                }
-                else{
-                    this.setState({workouts: data.workouts, ready: true})
-                }
+                this.setState({workouts: data.workouts, ready: true})
             })
             .catch(error => console.log(error))
     }
@@ -84,7 +79,6 @@ class Diary extends Component {
             this.setState({redirect:false})
             return <Redirect to='/'/>;
         }
-
         return (
             <div className="container" id="diaryContainer">
                 <h3>Training Diary</h3>

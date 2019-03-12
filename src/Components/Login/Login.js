@@ -24,17 +24,6 @@ class Login extends Component {
 
     }
 
-    componentDidMount() {
-        fetch('/api/getCurrentUser')
-            .then(res => res.json())
-            .then(data => {
-                if(data.user !== 'Not logged in'){ //If logged in, just redirect user to feed
-                    this.setState({redirect:true});
-                }
-            })
-            .catch(error => console.log(error))
-    }
-
     validateUser(email, password){
 
         fetch('/api/validateuser', {
@@ -52,12 +41,13 @@ class Login extends Component {
             .then(body => {
                 console.log(body)
                 if (body.user !== "Invalid") {
+                    this.props.handleLogin(body.user.id)
                     this.setState({ redirect: true, wrongPassword: false });
                 } else {
                     this.setState({wrongPassword:true});
                 }
             })
-            .catch(e => console.log(e))
+            .catch(err => console.log(err))
     }
 
     handleEmail(event) {
@@ -87,7 +77,7 @@ class Login extends Component {
 
     render() {
         if (this.state.redirect) {
-            return <Redirect to='/feed'/>;
+            return <Redirect to='/feed'/>
         }
         return (
             <div>

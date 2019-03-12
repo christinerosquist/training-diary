@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import './AddProgress.css'
 import Calendar from "react-calendar";
 import moment from "moment";
-import Redirect from "react-router-dom/es/Redirect";
 
 class AddProgress extends Component {
     constructor() {
@@ -13,27 +12,11 @@ class AddProgress extends Component {
             date: new Date(),
             inputkg: '',
             percent: '',
-            updated: false,
-            redirect:false,
-            user_id: null
+            updated: false
         }
 
         this.setWeightMode = this.setWeightMode.bind(this)
         this.setMuscleMode = this.setMuscleMode.bind(this)
-    }
-
-    componentDidMount() {
-        fetch('/api/getCurrentUser')
-            .then(res => res.json())
-            .then(data => {
-                if(data.user_id === 'Not logged in'){
-                    this.setState({redirect: true})
-                }
-                else{
-                    this.setState({user_id: data.user_id})
-                }
-            })
-            .catch(error => console.log(error))
     }
 
     setWeightMode() {
@@ -82,10 +65,6 @@ class AddProgress extends Component {
     }
 
     render() {
-        if (this.state.redirect) {
-            this.setState({redirect:false})
-            return <Redirect to='/'/>;
-        }
         return (
             <div className="conteiner centered">
                 <div className="btn-group" style={{marginBottom: '30px'}}>
@@ -106,6 +85,7 @@ class AddProgress extends Component {
                             <Calendar
                                 onChange={this.onDateChange}
                                 value={this.state.date}
+                                maxDate={new Date()}
                             />
                         </div>
 
