@@ -106,6 +106,7 @@ class AddProgress extends Component {
                             <Calendar
                                 onChange={this.onDateChange}
                                 value={this.state.date}
+                                maxDate={new Date()}
                             />
                         </div>
 

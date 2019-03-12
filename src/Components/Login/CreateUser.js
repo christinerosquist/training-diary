@@ -161,7 +161,7 @@ class CreateUser extends Component {
 
     render() {
         if (this.state.redirect) {
-            return <Redirect to='/'/>;
+            return <Redirect to='/'/>
         }
 
         const { email, password, name, sex, height, muscle} = this.state;

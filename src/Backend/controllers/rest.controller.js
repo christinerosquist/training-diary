@@ -7,7 +7,7 @@ router.get('/getCurrentUser', async function (req, res){
         const userId = req.session.currentUser;
         var user = await model.getUser(userId);
         res.json({
-            user: user,
+            user: user
         })
     }
     else{

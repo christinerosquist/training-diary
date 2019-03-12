@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {BrowserRouter, Route, Switch} from 'react-router-dom'
+import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom'
 import './App.css'
 import LoginPage from "./Pages/LoginPage/LoginPage"
 import FeedPage from "./Pages/FeedPage/FeedPage"
@@ -9,12 +9,17 @@ import AddProgressPage from "./Pages/AddProgressPage/AddProgressPage"
 import CreateUserPage from "./Pages/LoginPage/CreateUserPage";
 
 class App extends Component {
-    state = {
-        data: null,
-        userId: '',
+    constructor() {
+        super()
+
+        this.state = {
+            data: null,
+            userId: '',
+        }
     }
 
     componentDidMount() {
+       console.log("app mounted")
     }
 
     handleLogin = (userId) => {
